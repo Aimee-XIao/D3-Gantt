@@ -1,0 +1,465 @@
+@import '@/style/custom/var.global';
+@mixin merge($theme) {
+  .merge-top-main {
+    margin-top: 10px;
+  }
+  .merge-block {
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    background-color: rgba(8, 25, 38, 0.8);
+    border: 1px solid rgba(60, 166, 200, 0.7);
+    box-shadow: 0 0 50px rgba(60, 166, 200, 0.4) inset;
+    border-radius: 10px;
+    box-sizing: border-box;
+  }
+  .merge-block > .header {
+    padding: 0;
+    display: flex;
+    align-items: center;
+  }
+  .merge-block > .header >.header-title {
+    margin-left: 5px;
+    color: white;
+  }
+  .font-gray {
+    color: #7a939e;
+  }
+  .font-white {
+    color: #fff;
+  }
+  .font-yellow {
+    color: #FDCF53;
+  }
+  .font-green {
+    color: #03A786;
+  }
+  .font-red {
+    color: #ff6959;
+  }
+  .font-blue {
+    color: #6CDEFF;
+  }
+  .num-st, .num-nd {
+    font-weight: bold;
+  }
+  .num-st, .num-nd, .num-rd, .num-rs {
+    font-family: dinRegular;
+  }
+  .progress-circle {
+    height: 100%;
+    position: relative;
+  }
+  .progress-circle>.circle {
+    height: 100%;
+  }
+  .progress-circle>.text {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+    background-image: url(~@img/merge/bg_circle_glow_4k.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 90% 90%;
+  }
+  .progress-circle>.text>div:last-child {
+    margin-top: 10px;
+  }
+  @media (min-width: 1600px) {
+    .font-st {
+      font-size: 28px;
+    }
+    .font-nd {
+      font-size: 26px;
+    }
+    .font-rd {
+      font-size: 24px;
+    }
+    .font-rs {
+      font-size: 22px;
+    }
+    .num-st {
+      font-size: 48px;
+    }
+    .num-nd {
+      font-size: 42px;
+    }
+    .num-rd {
+      font-size: 34px;
+    }
+    .num-rs {
+      font-size: 24px;
+    }
+  }
+  @media (min-width: 1920px) {
+    .font-st {
+      font-size: 20px;
+    }
+    .font-nd {
+      font-size: 18px;
+    }
+    .font-rd {
+      font-size: 16px;
+    }
+    .font-rs {
+      font-size: 14px;
+    }
+    .num-st {
+      font-size: 38px;
+    }
+    .num-nd {
+      font-size: 32px;
+    }
+    .num-rd {
+      font-size: 24px;
+    }
+    .num-rs {
+      font-size: 19px;
+    }
+  }
+  @media (min-width: 2048px) {
+    .font-st {
+      font-size: 22px;
+    }
+    .font-nd {
+      font-size: 20px;
+    }
+    .font-rd {
+      font-size: 18px;
+    }
+    .font-rs {
+      font-size: 16px;
+    }
+    .num-st {
+      font-size: 40px;
+    }
+    .num-nd {
+      font-size: 34px;
+    }
+    .num-rd {
+      font-size: 26px;
+    }
+    .num-rs {
+      font-size: 20px;
+    }
+  }
+  @media (min-width: 2304px) {
+    .font-st {
+      font-size: 26px;
+    }
+    .font-nd {
+      font-size: 24px;
+    }
+    .font-rd {
+      font-size: 22px;
+    }
+    .font-rs {
+      font-size: 20px;
+    }
+    .num-st {
+      font-size: 48px;
+    }
+    .num-nd {
+      font-size: 42px;
+    }
+    .num-rd {
+      font-size: 34px;
+    }
+    .num-rs {
+      font-size: 24px;
+    }
+  }
+  @media (min-width: 2560px) {
+    .font-st {
+      font-size: 28px;
+    }
+    .font-nd {
+      font-size: 26px;
+    }
+    .font-rd {
+      font-size: 24px;
+    }
+    .font-rs {
+      font-size: 22px;
+    }
+    .num-st {
+      font-size: 52px;
+    }
+    .num-nd {
+      font-size: 46px;
+    }
+    .num-rd {
+      font-size: 38px;
+    }
+    .num-rs {
+      font-size: 26px;
+    }
+  }
+  @media (min-width: 3072px) {
+    .font-st {
+      font-size: 32px;
+    }
+    .font-nd {
+      font-size: 30px;
+    }
+    .font-rd {
+      font-size: 28px;
+    }
+    .font-rs {
+      font-size: 26px;
+    }
+    .num-st {
+      font-size: 58px;
+    }
+    .num-nd {
+      font-size: 52px;
+    }
+    .num-rd {
+      font-size: 42px;
+    }
+    .num-rs {
+      font-size: 29px;
+    }
+  }
+  @media (min-width: 3264px) {
+    .font-st {
+      font-size: 34px;
+    }
+    .font-nd {
+      font-size: 32px;
+    }
+    .font-rd {
+      font-size: 30px;
+    }
+    .font-rs {
+      font-size: 28px;
+    }
+    .num-st {
+      font-size: 62px;
+    }
+    .num-nd {
+      font-size: 56px;
+    }
+    .num-rd {
+      font-size: 46px;
+    }
+    .num-rs {
+      font-size: 31px;
+    }
+  }
+  @media (min-width: 3552px) {
+    .font-st {
+      font-size: 36px;
+    }
+    .font-nd {
+      font-size: 34px;
+    }
+    .font-rd {
+      font-size: 32px;
+    }
+    .font-rs {
+      font-size: 30px;
+    }
+    .num-st {
+      font-size: 66px;
+    }
+    .num-nd {
+      font-size: 60px;
+    }
+    .num-rd {
+      font-size: 50px;
+    }
+    .num-rs {
+      font-size: 33px;
+    }
+  }
+  @media (min-width: 3640px) {
+    .font-st {
+      font-size: 38px;
+    }
+    .font-nd {
+      font-size: 36px;
+    }
+    .font-rd {
+      font-size: 34px;
+    }
+    .font-rs {
+      font-size: 32px;
+    }
+    .num-st {
+      font-size: 70px;
+    }
+    .num-nd {
+      font-size: 64px;
+    }
+    .num-rd {
+      font-size: 54px;
+    }
+    .num-rs {
+      font-size: 35px;
+    }
+  }
+  @media (min-width: 3840px) {
+    .font-st {
+      font-size: 40px;
+    }
+    .font-nd {
+      font-size: 38px;
+    }
+    .font-rd {
+      font-size: 36px;
+    }
+    .font-rs {
+      font-size: 34px;
+    }
+    .num-st {
+      font-size: 76px;
+    }
+    .num-nd {
+      font-size: 70px;
+    }
+    .num-rd {
+      font-size: 60px;
+    }
+    .num-rs {
+      font-size: 38px;
+    }
+  }
+  /* 其他态势统计模块 */
+  .other-stat>div {
+    position: relative;
+  }
+  .export-view {
+    position: absolute;
+    width: fit-content;
+    height: fit-content;
+    z-index: -1;
+    /* display: none; */
+  }
+  .export-view,
+  .echarts-view {
+    @if $theme == dark {
+      color: #fff;
+      background-color: rgba(8, 25, 38, 1);
+    } @else {
+      color: #333;
+      background-color: #fff;
+    }
+    box-sizing: border-box;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    table {
+      table-layout : fixed;
+      text-align: center;
+      margin: auto;
+      height: fit-content;
+      @if $theme == dark {
+        border-color: rgba(60, 166, 200, 0.4);
+      } @else {
+        border-color: #cfcfcf;
+      }
+      td {
+        padding: 5px 0;
+      }
+    }
+  }
+  .echarts-view {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 10px;
+    @if $theme == dark {
+      border: 1px solid rgba(60, 166, 200, 0.7);
+      box-shadow: 0 0 50px rgba(60, 166, 200, 0.4) inset;
+    } @else {
+      border: 1px solid #e0e0e0;
+    }
+    >.toolbar {
+      position: absolute;
+      top: 10px;
+      right: 50px;
+      display: flex;
+      >div {
+        width: 26px;
+        height: 26px;
+        border-radius: 6px;
+        cursor: pointer;
+        background-position: center center;
+        background-size: 130%;
+        border: none !important;
+        box-shadow: none !important;
+        &:not(:last-child) {
+          margin-left: 10px;
+        }
+      }
+    }
+    >.close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+    }
+    >.header {
+      padding-right: 8px;
+      height: fit-content;
+      flex-grow: 0;
+    }
+    >.body {
+      width: 100%;
+      padding-right: 8px;
+      overflow-x: hidden;
+      overflow-y: scroll;
+      flex-grow: 1;
+    }
+    table:last-child {
+      margin-top: -2px;
+    }
+  }
+  .export-view {
+    margin: 12px;
+  }
+  .stat-wrapper {
+    width: 100%;
+    height: 100%;
+    /* display: flex;
+    flex-direction: column; */
+    position: relative;
+    >.tool-bar {
+      padding: 12px 12px 12px 32px;
+      height: 32px;
+      @if $theme == dark {
+        border-bottom: 1px solid rgba(60, 166, 200, 0.3);
+      } @else {
+        border-bottom: 1px solid #e0e0e0;
+      }
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: calc(100% - 44px);
+    }
+  }
+  .other-stat {
+    width: 100%;
+    height: 100%;
+    /* flex-grow: 1; */
+    padding: 74px 20px 20px 20px;
+    box-sizing: border-box;
+  }
+  .other-stat>div,
+  .other-stat .stat-view {
+    width: 100%;
+    height: 100%;
+  }
+  /* 其他态势统计模块end */
+}
+@include merge(light);

@@ -1,0 +1,47 @@
+@import '@/style/custom/var.global';
+.el-popover {
+  // padding: 8px 12px !important;
+  border-radius: 12px;
+}
+.el-dialog {
+  background-image: none;
+  .el-dialog__header .dialog-header {
+    color: rgb(0, 0, 0);
+  }
+}
+.gantt-mask {
+  z-index: 49;
+  cursor: not-allowed;
+  &:not(.highlight) {
+    background-color: rgba(0, 0, 0, .5);
+  }
+  &.highlight {
+    position: fixed;
+    left: 1367.5px;
+    right: 185px;
+    top: 754.5px;
+    height: 21px;
+    display: block;
+    box-shadow: 0 0 25px rgb(255, 255, 255);
+    z-index: 51;
+    pointer-events: none;
+    &:before,
+    &:after {
+      content: '';
+      position: absolute;
+      z-index: -1;
+      width: 100%;
+      left: 0;
+      height: 100%;
+      box-shadow: 5px 5px 20px white;
+    }
+    &:after {
+      transform: rotate(180deg);
+    }
+  }
+}
+.el-checkbox__label {
+  >span {
+    color: rgb(0, 0, 0);
+  }
+}

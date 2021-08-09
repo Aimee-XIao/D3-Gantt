@@ -1,0 +1,27 @@
+@import '@/style/custom/var.global';
+@import '@/style/custom/button';
+@import '@/style/custom/date';
+@import '@/style/custom/dialog';
+@import '@/style/custom/input';
+@import '@/style/custom/radio&checkbox';
+@import '@/style/custom/select&other';
+@import '@/style/custom/table';
+@import '@/style/custom/tree';
+@include button(light);
+@include date(light);
+@include dialog(light);
+@include input(light);
+@include radio(light);
+@include select(light);
+@include table(light);
+@include tree(light);
+.auto-dark-table {
+  @include button(dark);
+  @include date(dark);
+  @include dialog(dark);
+  @include input(dark);
+  @include radio(dark);
+  @include select(dark);
+  @include table(dark);
+  @include tree(dark);
+}

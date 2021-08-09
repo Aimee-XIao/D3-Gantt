@@ -1,0 +1,888 @@
+@import '../../style/custom/var.gantt';
+$default-background-color: map-get($light, 'default-background-color');
+$default-font-color: map-get($dark, 'default-font-color');
+$dialog-normal-font-color: map-get($light, 'dialog-normal-font-color');
+$dialog-label-font-color: map-get($light, 'dialog-label-font-color');
+$margin-block: 10px;
+$border-color: #e0e0e0;
+$font-label-color: #2c2c2c;
+$font-highligh-color: #000;
+@mixin absolute-left {
+  position: absolute;
+  left: 0;
+}
+@mixin absolute-right {
+  position: absolute;
+  right: 0;
+  margin-left: $margin-block;
+}
+@mixin menu-button {
+  display: inline-block;
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  line-height: 33px;
+  font-size: 16px;
+  color: $default-font-color;
+}
+@mixin menu-button-default {
+  // @include menu-button;
+  background-color: rgba($default-background-color, .4);
+}
+@mixin menu-button-single-query {
+  @include menu-button;
+  // font-weight: bold;
+  background-color: rgba(3, 167, 134, .4);
+}
+@mixin menu-button-complex-query {
+  @include menu-button;
+  background-color: rgba(52, 155, 230, .4);
+}
+@mixin menu-batch {
+  @include menu-button;
+  background-color: rgba(52, 155, 230, .4);
+}
+@mixin menu-batch-cancel {
+  @include menu-button;
+  // background-color: #808283cb;
+  border: 1px solid rgba(52, 155, 230, .4);
+  //background-image: url(~@img/basic/batch-cancel.png);
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+@mixin card-style {
+  background-color: $default-background-color;
+  // border: 2px solid rgba(255,255,255,1);
+  border-radius: 12px;
+  box-sizing: border-box;
+}
+.stand-gantt-view {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  >.stand-gantt-first-loading {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, .1);
+    font-size: 50px;
+    z-index: 999999;
+    cursor: not-allowed;
+  }
+  >.menu {
+    width: 100%;
+    position: relative;
+    >.left {
+      @include absolute-left;
+    }
+    >.right {
+      @include absolute-right;
+      font-size: 0;
+      >div {
+        &.menu-button {
+          margin-left: 5px;
+          cursor: pointer;
+          &.disabled {
+            cursor: not-allowed;
+          }
+          &.active {
+            border: 1px solid rgba(63, 136, 245, 0.4);
+            box-shadow: 0 0 5px 2px rgba(63, 136, 245, 0.5) inset;
+          }
+          &:hover {
+            border-color: rgba(134, 166, 170, .3);
+            box-shadow: 0 0 7px 1px rgba(134, 166, 170, .5) inset;
+          }
+          /* {key: 'Q', label: '查询区'},
+          {key: 'A', label: '单进航班', data: {inOutFlag: 'A'}},
+          {key: 'D', label: '单出航班', data: {inOutFlag: 'D'}},
+          {key: 'U', label: '机位未确认', urlKey: 'unconfirmed'},
+          {key: 'O', label: '前起未分', data: {beforeTakeOff: 'Y'}},
+          {key: 'N', label: '待分航班', data: {noDistribute: 'Y'}},
+          {key: 'S', label: '分割航班', urlKey: 'division'},
+          {key: 'C', label: '时间冲突', urlKey: 'conflict'},
+          {key: 'V', label: 'VIP航班', data: {VIP: 'Y'}} */
+          &.default {
+            @include menu-button;
+            @include menu-button-default;
+          }
+          &.Q {
+            @include menu-button;
+            @include menu-button-default;
+          }
+          &.A {
+            @include menu-button-single-query;
+            &:after {
+              content: 'A';
+            }
+          }
+          &.D {
+            @include menu-button-single-query;
+            &:after {
+              content: 'D';
+            }
+          }
+          &.V {
+            @include menu-button-single-query;
+            &:after {
+              content: 'V';
+            }
+          }
+          &.U {
+            @include menu-button-complex-query;
+            &:after {
+              content: '未';
+            }
+          }
+          &.C {
+            @include menu-button-complex-query;
+            &:after {
+              content: '时';
+            }
+          }
+          &.S {
+            @include menu-button-complex-query;
+            &:after {
+              content: '分';
+            }
+          }
+          &.N {
+            @include menu-button-complex-query;
+            &:after {
+              content: '待';
+            }
+          }
+          &.O {
+            @include menu-button-complex-query;
+            &:after {
+              content: '前';
+            }
+          }
+          &.T {
+            @include menu-button-single-query;
+            &:after {
+              content: 'U';
+            }
+          }
+          &.preAssign {
+            @include menu-button-complex-query;
+            &:after {
+              content: '预';
+            }
+          }
+          &.autoAssign {
+            @include menu-button-complex-query;
+            &:after {
+              content: '自';
+            }
+          }
+          &.standSettings,
+          &.gateSettings {
+            @include menu-button-complex-query;
+            &:after {
+              content: '设';
+            }
+          }
+          &.express {
+            @include menu-batch;
+            &:after {
+              content: '快';
+            }
+          }
+          &.express-cancel {
+            @include menu-batch-cancel;
+            &:after {
+              content: '快';
+            }
+          }
+          &.stand {
+            @include menu-batch;
+            &:after {
+              content: '机';
+            }
+          }
+          &.stand-cancel {
+            @include menu-batch-cancel;
+            &:after {
+              content: '机';
+            }
+          }
+          &.gate {
+            @include menu-batch;
+            &:after {
+              content: '登';
+            }
+          }
+          &.gate-cancel {
+            @include menu-batch-cancel;
+            &:after {
+              content: '登';
+            }
+          }
+          &.belt {
+            @include menu-batch;
+            &:after {
+              content: '转';
+            }
+          }
+          &.belt-cancel {
+            @include menu-batch-cancel;
+            &:after {
+              content: '转';
+            }
+          }
+          &.chute {
+            @include menu-batch;
+            &:after {
+              content: '滑';
+            }
+          }
+          &.chute-cancel {
+            @include menu-batch-cancel;
+            &:after {
+              content: '滑';
+            }
+          }
+          &.counter {
+            @include menu-batch;
+            &:after {
+              content: '值';
+            }
+          }
+          &.counter-cancel {
+            @include menu-batch-cancel;
+            &:after {
+              content: '值';
+            }
+          }
+        }
+        display: inline-block;
+        text-align: center;
+      }
+      >span {
+        &:not(:first-child) {
+          margin-left: 5px;
+        }
+        .menu-button {
+          @include menu-button;
+          @include menu-button-default;
+          cursor: pointer;
+          &.disabled {
+            cursor: not-allowed;
+          }
+          &.active {
+            border: 1px solid rgba(63, 136, 245, 0.4);
+            box-shadow: 0 0 5px 2px rgba(63, 136, 245, 0.5) inset;
+          }
+          &:hover {
+            border-color: rgba(134, 166, 170, .3);
+            box-shadow: 0 0 7px 1px rgba(134, 166, 170, .5) inset;
+          }
+          text-align: center;
+        }
+        display: inline-block;
+      }
+    }
+  }
+  >.center {
+    width: 100%;
+    position: relative;
+    margin-top: $margin-block;
+    >.left {
+      height: 100%;
+      @include absolute-left;
+      >.top {
+        width: 100%;
+        margin-bottom: $margin-block;
+        position: relative;
+        @include card-style;
+        >.title {
+          @include absolute-left;
+          left: 5px;
+          line-height: 2;
+          font-size: 22px;
+          font-weight: 400;
+          text-align: center;
+          vertical-align: middle;
+          color: rgb(0, 124, 202);
+        }
+      }
+      >.bottom {
+        width: 100%;
+        position: relative;
+        @include card-style;
+      }
+      .svg-scroll {
+        overflow: hidden;
+        position: relative;
+        &.cut {
+          //cursor: url(~@img/mouse/knife.ico), pointer;
+        }
+        >.svg-whole {
+          position: absolute;
+          left: 8px;
+          top: 8px;
+          >svg {
+            overflow: hidden;
+          }
+          .markLine {
+            pointer-events: none;
+            .mark-line {
+              text-anchor: middle;
+            }
+            .mark-line-font {
+              text-anchor: middle;
+              fill: #149dec;
+              stroke: #3da0f1ab;
+            }
+          }
+          .svg-scroll {
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            user-select: none;
+          }
+        }
+      }
+    }
+    >.right {
+      height: 100%;
+      overflow: hidden;
+      @include absolute-right;
+      @include card-style;
+      // background-color: rgba(49, 45, 251, 0.7);
+      >div {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        >.table-header {
+          position: absolute;
+          width: 100%;
+          // table-header
+        }
+        >.detail-ui {
+          width: 100%;
+          height: calc(100% - 70px);
+          position: absolute;
+          top: 60px;
+          padding: 0;
+          margin: 5px 0;
+          overflow: auto;
+          box-sizing: border-box;
+          >ul {
+            padding: 0;
+            margin: 0;
+            // margin: 10px;
+            // border: 1px solid rgba(60, 166, 200, .7);
+            // border-radius: 4px;
+            // background-color: rgba(255, 255, 255, 1);
+            >li {
+              height: 50px;
+              line-height: 50px;
+              /* &:not(:last-child) {
+                border-bottom: 1px solid rgba(153, 153, 153, 0.8);
+              } */
+              &.single-row {
+                background-color: rgb(245, 244, 244);
+              }
+              >.label {
+                color: rgb(51, 51, 51);
+                font-size: 15px;
+                font-weight: 500;
+                display: inline-block;
+                margin-left: 30px;
+                width: 120px;
+                overflow: hidden;
+                box-sizing: border-box;
+              }
+              >.info {
+                color: rgb(51, 51, 51);
+                font-size: 15px;
+                font-weight: 500;
+                max-width: calc(100% - 155px);
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                display: inline-block;
+                overflow: hidden;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+.gantt-express-dialog,
+.gantt-resource-confirm,
+.gantt-constraint-dialog,
+.gantt-constraint-other-dialog,
+.gantt-split-time-dialog,
+.gantt-merge-stand-dialog,
+.gantt-resource-config,
+.gantt-flight-config {
+  .dialog-body {
+    .whole-row {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      min-height: 32px;
+      margin-bottom: 24px;
+      text-align: left;
+      &.column {
+        flex-direction: column;
+      }
+      >.label {
+        padding-left: 20px;
+        width: 120px;
+        font-size: 18px;
+      }
+      >.info {
+        width: calc(100% - 120px);
+        font-size: 18px;
+      }
+      >.whole {
+        width: 100%;
+      }
+      >.table {
+        width: 100%;
+        box-sizing: border-box;
+        /* height: calc(100% - 100px); */
+        height: 300px;
+        overflow: hidden;
+        padding: 8px;
+        color: $font-highligh-color;
+        border: 1px solid $border-color;
+        // box-shadow: 0 0 30px rgba(132, 182, 247, 0.219) inset;
+        border-radius: 12px;
+        position: relative;
+        >div {
+          position: absolute;
+          &:first-child {
+            top: 8px;
+            left: 8px;
+          }
+          &:last-child {
+            overflow-x: hidden;
+            top: 58px;
+            left: 8px;
+            right: 8px;
+            bottom: 8px;
+          }
+          &.div-body {
+            tr, td {
+              height: 40px;
+              line-height: 40px;
+              text-align: left;
+            }
+            .table-opt-col {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
+          }
+        }
+      }
+      .table-title {
+        height: 40px;
+        line-height: 40px;
+        text-align: left;
+        width: 100%;
+        box-sizing: border-box;
+        >div {
+          display: inline-block;
+        }
+        margin-top: 20px;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+        border-left: 1px solid $border-color;
+        border-right: 1px solid $border-color;
+        border-top: 1px solid $border-color;
+        &+.table {
+          border-top: none !important;
+          border-top-left-radius: 0 !important;
+          border-top-right-radius: 0 !important;
+        }
+        .title-left {
+          color: $font-label-color;
+          font-size: 18px;
+          margin-left: 12px;
+          padding-left: 5px;
+        }
+        .title-right {
+          float: right;
+          margin-right: 12px;
+        }
+      }
+    }
+  }
+  .dialog-footer {
+    .left {
+      float: left;
+    }
+    .right {
+      float: right;
+    }
+  }
+}
+.gantt-express-dialog {
+  .error {
+    position: absolute;
+    text-align: left;
+    left: 20px;
+    top: -22px;
+    color: #d9415a;
+  }
+}
+.gantt-flight-config {
+  .dialog-body {
+    .third {
+      width: 33% !important;
+      &.label {
+        text-align: center;
+        padding: 0 !important;
+      }
+    }
+  }
+}
+.gantt-legend-popover {
+  margin: 12px 8px;
+  >.title {
+    height: 16px;
+    width: 100%;
+    color: #999;
+    font-size: 16px;
+    text-align: center;
+  }
+  >.legend-cont {
+    overflow-y: auto;
+    >div {
+      &:not(:last-child) {
+        border-bottom: 1px solid $border-color;
+      }
+      >.label {
+        margin-top: 12px;
+        color: $dialog-label-font-color;
+        font-size: 14px;
+      }
+      >.info {
+        height: 65px;
+        margin-bottom: 8px;
+        >div {
+          float: left;
+          width: calc(100% / 3);
+          >.img-stand {
+            margin: 12px 0 8px 0;
+            height: 25px;
+            background-position: center center;
+            background-repeat: no-repeat;
+            &.stand-normal {
+              //background-image: url(~@img/gantt/legend/stand_normal.png);
+            }
+            &.stand-lock {
+              //background-image: url(~@img/gantt/legend/stand_lock.png);
+            }
+            &.stand-confirm {
+              //background-image: url(~@img/gantt/legend/stand_confirm.png);
+            }
+            &.aircraft-occupy {
+              //background-image: url(~@img/gantt/legend/aircraft_occupy.png);
+            }
+            &.unexpress-a {
+              //background-image: url(~@img/gantt/legend/unexpress_a.png);
+            }
+            &.unexpress-d {
+              //background-image: url(~@img/gantt/legend/unexpress_d.png);
+            }
+            &.unexpress-ad {
+              //background-image: url(~@img/gantt/legend/unexpress_ad.png);
+            }
+            &.express-a {
+              //background-image: url(~@img/gantt/legend/express_a.png);
+            }
+            &.express-d {
+              //background-image: url(~@img/gantt/legend/express_d.png);
+            }
+            &.express-ad {
+              //background-image: url(~@img/gantt/legend/express_ad.png);
+            }
+            &.split-begin {
+              //background-image: url(~@img/gantt/legend/split_begin.png);
+            }
+            &.split-middle {
+              //background-image: url(~@img/gantt/legend/split_middle.png);
+            }
+            &.split-end {
+              //background-image: url(~@img/gantt/legend/split_end.png);
+            }
+          }
+          >.font {
+            text-align: center;
+            color: $dialog-normal-font-color;
+            font-size: 14px;
+          }
+        }
+      }
+    }
+  }
+}
+.cont-tr-div {
+  display: flex;
+  justify-content: left;
+  >div {
+    height: 40px;
+    line-height: 40px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}
+.td-edit-div {
+  margin-right: 10px;
+  input {
+    border-radius: 6px;
+  }
+}
+.unjoin-table-thead {
+  height: 44px;
+  color: $font-label-color;
+}
+.unjoin-table {
+  width: 100%;
+  &:not(.special) {
+    tr {
+      th, td {
+        &:first-of-type {
+          padding-left: 20px;
+        }
+      }
+    }
+  }
+  tr {
+    >th {
+      text-align: left;
+    }
+  }
+  .unjoin-table-tr {
+    height: 44px;
+    // color: #fff;
+    >td {
+      height: 44px;
+    }
+    .cont-tr-div {
+      float: left;
+    }
+    .text-overflow {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+  .add-button {
+    float: right;
+    width: 30px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 12px;
+    .tool-div-button {
+      width: 30px;
+      height: 30px;
+      border: 1px solid #447385;
+      border-radius: 6px;
+      box-sizing: content-box;
+      cursor: pointer;
+      background-position: center;
+    }
+  }
+}
+.flight-audit {
+  margin-top: 100px;
+  margin-bottom: 20px;
+  height: calc(100% - 120px);
+  .top-content {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    >div {
+      height: 40px;
+      line-height: 40px;
+      text-align: left;
+      >div {
+        display: inline-block;
+        height: 40px;
+        line-height: 40px;
+        text-align: left;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .label {
+        color: $font-label-color;
+        width: 70px;
+      }
+      .info {
+        // color: #fff;
+        width: 130px;
+      }
+      &.special {
+        .label {
+          width: 70px;
+        }
+        .info {
+          width: 150px;
+        }
+      }
+      &.special-large {
+        .label {
+          width: 100px;
+        }
+        .info {
+          // color: #fff;
+          // width: calc(100% - 115px);
+        }
+      }
+    }
+  }
+  .bottom-btns {
+    position: absolute;
+    bottom: 70px;
+    .el-button+.el-button {
+      margin-left: 40px;
+    }
+  }
+  .center-table {
+    height: calc(100% - 220px);
+    margin-top: 20px;
+    border-radius: 12px;
+    border: 1px solid $border-color;
+  }
+}
+.fifth-block, .fourth-block {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  >div {
+    height: 40px;
+    line-height: 40px;
+    text-align: left;
+    >div {
+      display: inline-block;
+    }
+    .label {
+      color: $font-label-color;
+      width: 60px;
+    }
+    .info {
+      // color: #fff;
+      font-size: 16px;
+      width: calc(100% - 75px);
+    }
+    &.two {
+      .label {
+        width: calc(50% - 10px);
+      }
+      .info {
+        width: calc(50% - 5px);
+      }
+    }
+    &.three {
+      .label {
+        width: 60px;
+      }
+    }
+    &.four {
+      .label {
+        width: calc(25% - 10px);
+      }
+      .info {
+        width: calc(75% - 5px);
+      }
+    }
+    &.five {
+      .label {
+        width: calc(20% - 10px);
+      }
+    }
+    &.special {
+      .label {
+        width: 60px;
+      }
+      .info {
+        width: calc(100% - 75px);
+      }
+    }
+    &.special-large {
+      .label {
+        width: 100px;
+      }
+      .info {
+        width: calc(100% - 115px);
+      }
+    }
+    &.table {
+      width: 100%;
+      /* height: calc(100% - 100px); */
+      height: 300px;
+      overflow: hidden;
+      padding: 8px;
+      border: 1px solid $border-color;
+      // box-shadow: 0 0 30px rgba(139, 189, 253, 0.192) inset;
+      border-radius: 12px;
+      position: relative;
+      >div {
+        position: absolute;
+        &:first-child {
+          top: 8px;
+          left: 8px;
+        }
+        &:last-child {
+          overflow-x: hidden;
+          top: 52px;
+          left: 8px;
+          right: 8px;
+          bottom: 8px;
+        }
+      }
+    }
+  }
+}
+.fifth-block {
+  >div {
+    width: 20%;
+    &.two {
+      width: 40%;
+    }
+    &.three {
+      width: 60%;
+    }
+    &.four {
+      width: 80%;
+    }
+    &.five {
+      width: 100%;
+    }
+  }
+}
+.fourth-block {
+  >div {
+    width: 25%;
+    &.two {
+      width: 50%;
+    }
+    &.three {
+      width: 75%;
+    }
+    &.four {
+      width: 100%;
+    }
+  }
+}
