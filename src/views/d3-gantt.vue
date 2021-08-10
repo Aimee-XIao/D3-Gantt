@@ -1,130 +1,176 @@
 <template>
- <div id="bar">
-
+ <div>
+   <y-select v-model="terminals"  placeholder="Tags Mode" style="width: 120px;float: left;" @change="handleChange">
+     <y-select-option v-for="(ite, ind) in terminal" :value="ite.ter" :key="ind">{{ ite.label }}</y-select-option>
+   </y-select>
+   <div id="bar" > </div>
  </div>
 </template>
 
 <script>
+import '../gantt-chart-d3'
 import moment  from "moment-mini";
 export default {
   name: "d3-gantt",
   data() {
     return {
-      lubList: [
+      terminals: null,
+      terminal:[{
+        ter: "T1",
+        label: '国内 T1'
+      },
         {
-          lugNo: '04',
-          flight: 'Mu2305',
-          start: "2021-07-05 11:00",
-          end: '2021-07-06 12:00',
-          num: 25
+          ter: "T2",
+          label: '国内 T2'
         },
         {
-          lugNo: '05',
-          flight: 'Mu2305',
-          start: "2021-07-05 11:00",
-          end: '2021-07-06 12:00',
-          num: 40
-        }
-      ],
-      list: [
-        {
-          age: 10,
-          num: 520
-        },
-        {
-          age: 12,
-          num: 100
-        },
-        {
-          age: 15,
-          num: 150
-        },
-        {
-          age: 16,
-          num: 200
-        },
-        {
-          age: 17,
-          num: 150
-        }
-      ],
-      width : 1534,
-      height: 500,
-      margin : { left : 30, top: 30, right: 30, bottom: 30},
-      barWidth :50,
-      barHeight: 50,
-      barPadding: 10,
+          ter: "T3",
+          label: '国际 T3'
+        }],
+      tasks:[
+        {"startDate":new Date("2021-08-10 04:00:00"),"endDate":new Date("2021-08-10 06:00:00"),"taskName":"L-01","status":"RUNNING"},
+        {"startDate":new Date("2021-08-09 24:00:00"),"endDate":new Date("2021-08-10 03:00:00"),"taskName":"L-02","status":"RUNNING"},
+        {"startDate":new Date("2021-08-10 01:00:00"),"endDate":new Date("2021-08-10 04:00:00"),"taskName":"L-03","status":"FAILED"},
+        {"startDate":new Date("2021-08-10 12:00:00"),"endDate":new Date("2021-08-10 16:00:00"),"taskName":"L-07","status":"RUNNING"},
+        {"startDate":new Date("2021-08-10 05:00:00"),"endDate":new Date("2021-08-10 10:00:00"),"taskName":"L-10","status":"SUCCEEDED"},
+        {"startDate":new Date("2021-08-10 04:00:00"),"endDate":new Date("2021-08-10 06:00:00"),"taskName":"L-11","status":"KILLED"},
+        {"startDate":new Date("2021-08-09 24:00:00"),"endDate":new Date("2021-08-10 03:00:00"),"taskName":"L-14","status":"RUNNING"},
+        {"startDate":new Date("2021-08-10 01:00:00"),"endDate":new Date("2021-08-10 04:00:00"),"taskName":"L-15","status":"FAILED"},
+        {"startDate":new Date("2021-08-10 12:00:00"),"endDate":new Date("2021-08-10 16:00:00"),"taskName":"L-16","status":"RUNNING"},
+        {"startDate":new Date("2021-08-10 05:00:00"),"endDate":new Date("2021-08-10 10:00:00"),"taskName":"L-19","status":"SUCCEEDED"},
+        ],
+      taskNames:[ "L-01", "L-02", "L-03", "L-07", "L-08","L-10","L-11","L-12","L-13","L-14","L-15","L-16","L-17","L-18","L-19"],
+      taskStatus: {
+        "SUCCEEDED" : "bar",
+        "FAILED" : "bar-failed",
+        "RUNNING" : "bar-running",
+        "KILLED" : "bar-killed"
+      }
 
     }
   },
-  computed: {
-    svgHeight() {
-      return this.height + this.margin.top + this.margin.bottom
-    },
-    svgWidth() {
-      return this.width + this.margin.left + this.margin.right
-    }
-  },
+
+
   mounted() {
-    this.draw()
+    this.example()
   },
   methods: {
-    draw() {
-      var svg = this.$d3.select("#bar")
-        .append("svg")
-        .attr("width", this.svgWidth)
-        .attr("height", this.svgHeight)
+    handleChange(value) {
+    },
+    example() {
 
-      var scale = this.$d3.scale.linear()
-        .domain([0,this.$d3.max(this.list, function (d){ return d.num})])
-        .range([this.height, 0])
+      this.tasks.sort(function(a, b) {
+        return a.endDate - b.endDate;
+      });
+      var maxDate = this.tasks[this.tasks.length - 1].endDate;
+      this.tasks.sort(function(a, b) {
+        return a.startDate - b.startDate;
+      });
+      var minDate = this.tasks[0].startDate;
 
-      var scale_x = this.$d3.scale.ordinal()
-        .domain([0, this.list.map(function(d) { return d.age; })])
-        .rangeBands([0,this.width], 0.1);
-      var chart = svg.append("g")
-        .attr("transform", "translate("+ this.margin.left + ","+ this.margin.top + ")")
+      var format = "%H:%M";
 
-      var x_axis = this.$d3.svg.axis().scale(scale_x),
-        y_axis = this.$d3.svg.axis().scale(scale).orient("left")
+      var gantt = this.$d3.gantt().taskTypes(this.taskNames).taskStatus(this.taskStatus).tickFormat(format);
+      gantt(this.tasks);
+      this.example.addTask = function() {
 
-      chart.append("g")
-        .call(x_axis)
-        .attr("transform", "translate(0,"+ this.height +")")
+        var lastEndDate = Date.now();
+        if (this.tasks.length > 0) {
+          lastEndDate = this.tasks[this.tasks.length - 1].endDate;
+        }
 
-      chart.append("g")
-        .call(y_axis)
-        .attr("transform", "translate(5,0)")
-      var that = this
-      var bar =  chart.selectAll(".item")
-        .data(this.list)
-        .enter()
-        .append("g")
-        .attr("class", "item")
-        .attr("transform", function(d, i){return "translate(0,"+ i * (that.barPadding + that.barHeight)+")"})
+        var taskStatusKeys = Object.keys(this.taskStatus);
+        var taskStatusName = taskStatusKeys[Math.floor(Math.random()*taskStatusKeys.length)];
+        var taskName = this.taskNames[Math.floor(Math.random()*this.taskNames.length)];
 
+        this.tasks.push({"startDate":this.$d3.time.hour.offset(lastEndDate,Math.ceil(1*Math.random())),"endDate":this.$d3.time.hour.offset(lastEndDate,(Math.ceil(Math.random()*3))+1),"taskName":taskName,"status":taskStatusName});
+        gantt.redraw(this.tasks);
+      };
 
-      bar.append("rect")
-        .attr("height", 50)
-        .attr("width", function (d){return scale_x(d.age)})
-        .attr("fill", "gray")
-
-      bar.append("text")
-        .text(function (d){return d.num})
-        .attr("y", function (d){return scale(d.num)})
-        .attr("x", scale_x.rangeBand() / 2)
-        .attr("text-anchor", "end")
-        .attr("dy", 15)
-
+      this.example.removeTask = function() {
+        this.tasks.pop();
+        gantt.redraw(this.tasks);
+      };
     }
   }
 };
 </script>
 
 <style>
-.domain, .tick line{
-  stroke: gray;
-  fill: none;
-  stroke-width: 1;
+
+.chart {
+  font-family: Arial, sans-serif;
+  font-size: 12px;
 }
+
+.scroll {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+.axis path,.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+rect {
+  height: 50px;
+}
+.bar {
+  fill: #33b5e5;
+}
+
+.bar-failed {
+  fill: #CC0000;
+}
+
+.bar-running {
+  fill: #669900;
+}
+
+.bar-succeeded {
+  fill: #33b5e5;
+}
+
+.bar-killed {
+  fill: #ffbb33;
+}
+
+#forkme_banner {
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 10px;
+  z-index: 10;
+  padding: 10px 50px 10px 10px;
+  color: #fff;
+  background:
+    url('http://dk8996.github.io/Gantt-Chart/images/blacktocat.png')
+    #0090ff no-repeat 95% 50%;
+  font-weight: 700;
+  box-shadow: 0 0 10px rgba(0, 0, 0, .5);
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
+  text-decoration: none;
+}
+
+#twittme_banner {
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 180px;
+  z-index: 10;
+  padding: 10px 50px 10px 10px;
+  color: #fff;
+  background:
+    url('http://dk8996.github.io/Gantt-Chart/images/twitter.png')
+    #0090ff no-repeat 95% 50%;
+  font-weight: 700;
+  box-shadow: 0 0 10px rgba(0, 0, 0, .5);
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
+  text-decoration: none;
+}
+
 </style>
