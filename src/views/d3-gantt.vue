@@ -96,7 +96,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 
 .chart {
   font-family: Arial, sans-serif;

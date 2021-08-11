@@ -1,7 +1,7 @@
 <template>
   <div class="body">
     <div class="leftBox">
-      <Dgantt  @flightMsg="flightMsg"/>
+      <gnattIndex  @flightMsg="flightMsg"/>
     </div>
     <div class="rightBox">
       <Flight :propData = "initFlight"></Flight>
@@ -13,7 +13,9 @@
 import gantt from './ganttIndex'
 import Flight from './flightMsg'
 import moment from "moment-mini";
-import Dgantt from './d3-gantt'
+import Dgantt from './d3-gantt';
+import gnattIndex from './gantt-index'
+import example from  './example'
 export default {
   data() {
     return {
@@ -55,7 +57,7 @@ export default {
       }
     }
   },
-  components: { gantt, Flight , Dgantt },
+  components: { gantt, Flight , Dgantt, gnattIndex, example },
   methods: {
     flightMsg(e) {
       this.initFlight = {
@@ -98,7 +100,7 @@ export default {
     height: 100%;
     background-color: #fff;
     border-radius: 12px;
-    padding: 15px;
+    //padding: 15px;
     box-sizing: border-box;
   }
   .rightBox {

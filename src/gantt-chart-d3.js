@@ -79,24 +79,24 @@ d3.gantt = function() {
 	.append("svg")
 	.attr("class", "chart")
 	.attr("width", width + margin.left + margin.right)
-	.attr("height", height + margin.top + margin.bottom)
+	.attr("height", 825)
 	.append("g")
         .attr("class", "gantt-chart")
 	.attr("width", 1500)
-	.attr("height", height + margin.top + margin.bottom)
+	.attr("height", 825)
 	.attr("transform", "translate(" + margin.left + ", " + margin.top + ")");
 
 		var area = 	svg.append("foreignObject")
 			.attr("class", "chat-area")
 			.attr("width", 1480)
-			.attr("height", 800)
+			.attr("height", 780)
 
     area.html("<div class='scroll'></div>")
 
     var areaBox = area.selectAll(".scroll")
 			.append("svg")
 			.attr("width", 7000)
-			.attr("height", height - margin.top - margin.bottom)
+			.attr("height", 800)
 
 			areaBox.selectAll(".rect")
 			.data(taskTypes)
