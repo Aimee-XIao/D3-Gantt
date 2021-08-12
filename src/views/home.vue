@@ -1,10 +1,10 @@
 <template>
   <div class="body">
     <div class="leftBox">
-      <gnattIndex  @flightMsg="flightMsg"/>
+      <gnattIndex  @flight="flightMsg"/>
     </div>
     <div class="rightBox">
-      <Flight :propData = "initFlight"></Flight>
+      <Flight  :propData = "initFlight"></Flight>
     </div>
   </div>
 </template>
@@ -60,6 +60,7 @@ export default {
   components: { gantt, Flight , Dgantt, gnattIndex, example },
   methods: {
     flightMsg(e) {
+      console.log('----------', e)
       this.initFlight = {
         title: '航班详情',
           flgMsg: {

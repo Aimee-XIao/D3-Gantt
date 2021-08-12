@@ -1,21 +1,24 @@
 <template>
-  <div class="bottom svg-scroll">
-    <svg width="1537" height="837" baseProfile="full" class="svg-whole">
+  <div class="bottom svg-scroll" :style="{height: computeLeftBottomHeight + 'px'}">
+    <svg  :style="{left: pStyle.carkMargin + 'px', top: pStyle.carkMargin + 'px'}"
+          :width="computeLeftWidth - 2 * pStyle.cardMargin"
+          :height="computeLeftBottomHeight - 2 * pStyle.cardMargin"
+          baseProfile="full" class="svg-whole">
       <defs>
         <filter id="box-shadow-series">
           <feDropShadow dx="0" dy="0" stdDeviation="10" flood-color="#ff0000"></feDropShadow>
         </filter>
       </defs>
      <!--内容区域-->
-      <foreignObject x="130" y="50" width="1399" height="779">
+      <foreignObject :x="xAxis.left" :y="yAxis.top" :width="computeLeftWidth - xAxis.left - 2 * pStyle.cardMargin" :height="computeLeftBottomHeight - yAxis.top - 2 * pStyle.cardMargin">
         <div ref="svgBottomContent" class="svg-scroll">
-          <svg width="20211" height="7280">
-            <mArea :selfRef="'svgBottom'" ref="svgBottomData" id="svgBottomData" :refresh="refresh" :xAxis="xAxis" :yAxis="yAxis" :series="dataArrs"></mArea>
+          <svg :width="xAxis.width" :height="yAxis.height">
+            <mArea @clickBlock="clickBlock"  :selfRef="'svgBottom'" ref="svgBottomData" id="svgBottomData" :refresh="refresh" :xAxis="xAxis" :yAxis="yAxis" :series="dataArrs"></mArea>
           </svg>
         </div>
       </foreignObject>
      <!--坐标 x-->
-      <svg x="130">
+      <svg :x="xAxis.left">
         <xAxis ref="xAxisBottom" id="xAxisBottom" :xAxis="xAxis" :refresh="refresh"></xAxis>
         <g ref="markLineBottom" class="markLine" transform="translate(-10, 0)">
           <line class="mark-line" :y1="markLineBottom.y" :y2="markLineBottom.y + markLineBottom.height" :stroke="markLineBottom.color"></line>
@@ -23,14 +26,15 @@
         </g>
       </svg>
       <!--坐标 y-->
-      <svg y="50">
-        <yAxis ref="yAxisBottom" id="yAxisBottom"  :refresh="refresh" :series="dataArrs" ></yAxis>
+      <svg :y="yAxis.top">
+        <yAxis ref="yAxisBottom" id="yAxisBottom"  :refresh="refresh" :series="dataArrs"  ></yAxis>
       </svg>
     </svg>
 
   </div>
 </template>
 <script>
+import '../assets/gsap.min.js'
 import yAxis from '../components/yAxis'
 import xAxis from '../components/xAxis'
 import mArea from '../components/cArea'
@@ -55,8 +59,8 @@ export default {
         top: 30,
         left: 130,
         right: 20,
-        now: '2021-08-11 14:26',
-        start: '2021-08-10 00:00'
+        now: '2021-08-12 14:19',
+        start: '2021-08-11 00:00'
       },
       markLineBottom: {
         y: 0,
@@ -95,6 +99,10 @@ export default {
           width: 130,
           height: 40
         },
+        conf: {
+          id: "standNo",
+          value: "standNo"
+        },
         fontStyle: {
           fontSize: 14
         },
@@ -110,12 +118,18 @@ export default {
     computeLeftTopHeight () {
       return (this.pStyle.topHeight + (this.showBlock.leftBottom.show ? 0 : this.pStyle.bottomHeight))
     },
+    computeLeftWidth () {
+      return (this.pStyle.leftWidth + (this.showBlock.right ? 0 : this.pStyle.rightWidth))
+    },
     computeLeftBottomHeight () {
       return (this.pStyle.bottomHeight + (this.showBlock.leftTop.show ? 0 : (this.pStyle.topHeight + 12)))
     },
     dataArrs() {
       return dataArr
     }
+  },
+  created() {
+
   },
   mounted() {
     this.$nextTick(() => {
@@ -148,6 +162,10 @@ export default {
     })
   },
   methods: {
+    clickBlock(obj) {
+      this.$emit("flight", obj)
+      console.log('----------',obj )
+    },
     customScroll () {
       // this.$set(this.menuFlight, 'show', false)
       // this.$set(this.menuStand, 'show', false)

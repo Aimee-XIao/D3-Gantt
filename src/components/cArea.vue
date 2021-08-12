@@ -4,12 +4,12 @@
     <rect ref="beforeNow" class="beforeNow" fill="rgba(238, 238, 238, 0.6)"></rect>
     <g class="rowGroup">
       <line class="rowLine" style="stroke: #e0e0e0; stroke-width: 1;"></line>
-      <g class="colGroup">
+      <g class="colGroup" >
         <path d="" class="colBlock"></path>
         <g class="fontGroup">
-          <text class="fontLeft" :fill="'#000'" stroke="none" style="font-size: 18px; text-shadow: #fff 1px 0 0, #fff 0px 1px 0, #fff -1px 0 0, #fff 0 -1px 0; text-anchor: start; dominant-baseline: ideographic;"></text>
-          <text class="fontCenter" :fill="'#000'" stroke="none" style="font-size: 18px; text-shadow: #fff 1px 0 0, #fff 0px 1px 0, #fff -1px 0 0, #fff 0 -1px 0; text-anchor: middle; dominant-baseline: ideographic;"></text>
-          <text class="fontRight" :fill="'#000'" stroke="none" style="font-size: 18px; text-shadow: #fff 1px 0 0, #fff 0px 1px 0, #fff -1px 0 0, #fff 0 -1px 0; text-anchor: end; dominant-baseline: ideographic;"></text>
+          <text class="fontLeft" :fill="'#000'" stroke="none" style="font-size: 14px; text-shadow: #fff 1px 0 0, #fff 0px 1px 0, #fff -1px 0 0, #fff 0 -1px 0; text-anchor: start; dominant-baseline: ideographic;"></text>
+<!--          <text class="fontCenter" :fill="'#000'" stroke="none" style="font-size: 18px; text-shadow: #fff 1px 0 0, #fff 0px 1px 0, #fff -1px 0 0, #fff 0 -1px 0; text-anchor: middle; dominant-baseline: ideographic;"></text>-->
+          <text class="fontRight" :fill="'#000'" stroke="none" style="font-size: 14px; text-shadow: #fff 1px 0 0, #fff 0px 1px 0, #fff -1px 0 0, #fff 0 -1px 0; text-anchor: end; dominant-baseline: ideographic;"></text>
         </g>
       </g>
     </g>
@@ -27,6 +27,7 @@ export default {
   props: ['xAxis', 'yAxis', 'series','refresh'],
   data() {
     return {
+      // dragType: "self",
       cId: '',
       name: ['all', 'start', 'now', 'x', 'fonts', 'color'],
       width: 0,
@@ -68,8 +69,8 @@ export default {
           value: 'dataArray'
         },
         colConf: {
-          s: ['ate', 'ete'],
-          e: ['ats', 'ets'],
+          e: ['ate', 'ete'],
+          s: ['ats', 'ets'],
           id: "dynamicResourceId",
           labels: {
             'A': {
@@ -298,6 +299,7 @@ export default {
             this.beforeNow = this.$refs[this.cId + 'customRow'].querySelector('.beforeNow')
             this.rowGroup = this.$refs[this.cId + 'customRow'].querySelector('.rowGroup')
             this.colGroup = this.rowGroup.querySelector('.colGroup')
+
             this.$d3.select(this.rectMark)
               .attr('height', yAxis.transStyle.height)
               .attr('width', xAxis.width - xAxis.boundaryGap[0] - xAxis.boundaryGap[1])
@@ -402,6 +404,7 @@ export default {
       this.clear()
       let rowGroup, colGroup, colBlock
       let h = yAxis.transStyle.height
+      // let h  = 20
       let arrI = series.data || []
       for (let i = 0; i < arrI.length; i++) {
         let topY = this.topY(i) + yAxis.boundaryGap[0]
@@ -498,7 +501,8 @@ export default {
                 .on('click', function () {
                   clickBlock(colBlock, arrJ[j])
                 })
-              let blockH = h - this.margin.top - this.margin.bottom
+              let blockH = h - 10 * 2
+
               if (width < 0) {
                 continue
               }
@@ -510,101 +514,55 @@ export default {
                 // .attr('height', blockH)
                 .attr('fill', 'transparent') // '#90ff96')
                 .attr('stroke', 'transparent')
+                .attr("transform", "translate(0,10)")
               // .attr('stroke-width', 1)
               /* 根据状态判断添加哪些形状 */
-              let tmp = this.drawPath(colGroup, 0, 0, width, blockH, arrJ[j], colBlock)
-              if (arrJ[j].afid) {
-                if (this.dragType === 'self') {
-                  let dragstartSelf = this.dragstartSelf
-                  let dragSelf = this.dragSelf
-                  let dragendSelf = this.dragendSelf
-                  let contextmenuSelf = this.contextmenuSelf
-                  let dragEvent =  this.$d3.drag()
-                    .on('start', function () {dragstartSelf(this, arrJ[j])})
-                    .on('drag', function () {dragSelf(this, arrJ[j])})
-                    .on('end', function () {dragendSelf(this, arrJ[j])})
-                  this.$d3.select(colGroup)
-                    .on('contextmenu', function () {
-                      this.$d3.event.preventDefault()
-                      contextmenuSelf(colBlock, arrJ[j])
-                    })
-                  this.selfJudge(arrJ[j]) &&  this.$d3.select(colGroup).call(dragEvent)
-                } else if (this.dragType === 'between') {
-                  let dragstartBetween = this.dragstartBetween
-                  let dragBetween = this.dragBetween
-                  let dragendBetween = this.dragendBetween
-                  let dragEvent =  this.$d3.drag()
-                    .on('start', function () {dragstartBetween(this, arrJ[j])})
-                    .on('drag', function () {dragBetween(this, arrJ[j])})
-                    .on('end', function () {dragendBetween(this, arrJ[j])})
-                  this.betweenJudge(arrJ[j]) &&  this.$d3.select(colGroup)
-                    .call(dragEvent)
-                }
-              }
+               this.drawPath(colGroup, 0, 0, width, blockH, arrJ[j], colBlock)
+              // if (arrJ[j].afid) {
+              //   if (this.dragType === 'self') {
+              //     let dragstartSelf = this.dragstartSelf
+              //     let dragSelf = this.dragSelf
+              //     let dragendSelf = this.dragendSelf
+              //     let contextmenuSelf = this.contextmenuSelf
+              //     let dragEvent =  this.$d3.drag()
+              //       .on('start', function () {dragstartSelf(this, arrJ[j])})
+              //       .on('drag', function () {dragSelf(this, arrJ[j])})
+              //       .on('end', function () {dragendSelf(this, arrJ[j])})
+              //     this.$d3.select(colGroup)
+              //       .on('contextmenu', function () {
+              //         this.$d3.event.preventDefault()
+              //         contextmenuSelf(colBlock, arrJ[j])
+              //       })
+              //     this.selfJudge(arrJ[j]) &&  this.$d3.select(colGroup).call(dragEvent)
+              //   } else if (this.dragType === 'between') {
+              //     let dragstartBetween = this.dragstartBetween
+              //     let dragBetween = this.dragBetween
+              //     let dragendBetween = this.dragendBetween
+              //     let dragEvent =  this.$d3.drag()
+              //       .on('start', function () {dragstartBetween(this, arrJ[j])})
+              //       .on('drag', function () {dragBetween(this, arrJ[j])})
+              //       .on('end', function () {dragendBetween(this, arrJ[j])})
+              //     this.betweenJudge(arrJ[j]) &&  this.$d3.select(colGroup)
+              //       .call(dragEvent)
+              //   }
+              // }
+
               let fontGroup = colGroup.querySelector('.fontGroup')
               this.$d3.select(fontGroup)
-                .attr('transform', `translate(0, 0)`)
-              let center = fontGroup.querySelector('.fontCenter')
-              this.$d3.select(center)
-                .attr('transform', `translate(${width / 2}, ${h / 2})`)
+                .attr('transform', `translate(0,  ${h / 2})`)
+              // let center = fontGroup.querySelector('.fontCenter')
+              // this.$d3.select(center)
+              //   .attr('transform', `translate(${width / 2}, ${blockH / 2})`)
               if (arrJ[j].afid) {
                 let inOutFlag = this.computedInOutFlag(arrJ[j])
-                let left = fontGroup.querySelector('.fontLeft')
                 let right = fontGroup.querySelector('.fontRight')
-                // let fontY = h / 2 + 2 // + ((j % 2) ? yAxis.offsetY : -yAxis.offsetY)
-                let offsetFontX = 10 + h * 2 / 5
-                this.$d3.select(left)
-                  .attr('transform', `translate(${offsetFontX}, ${h / 2})`)
-                  .attr('fill', this.drawFont(series.colConf.labels[inOutFlag].left, arrJ[j]))
-                this.$d3.select(center)
-                  .attr('fill', this.drawFont(series.colConf.labels[inOutFlag].center, arrJ[j]))
-                this.$d3.select(right)
-                  .attr('transform', `translate(${width - offsetFontX}, ${h / 2})`)
-                  .attr('fill', this.drawFont(series.colConf.labels[inOutFlag].right, arrJ[j]))
-                let show = []
-                if (series.colConf.labels[inOutFlag].left && offsetFontX >= tmp.left && (width - offsetFontX) <= tmp.right) {
-                  this.$d3.select(left)
-                    .text(_.get(arrJ[j], series.colConf.labels[inOutFlag].left))
-                  show.push('left')
-                }
-                if (series.colConf.labels[inOutFlag].center) {
-                  this.$d3.select(center)
-                    .text(_.get(arrJ[j], series.colConf.labels[inOutFlag].center))
-                  show.push('center')
-                  if (show.includes('left')) {
-                    if ((width / 2 + center.getBBox().x) < (offsetFontX + left.getBBox().width)) {
-                      this.$d3.select(left)
-                        .text('')
-                      _.pull(show, 'left')
-                    }
-                  }
-                  if ((width / 2 + center.getBBox().x) < tmp.left || (width / 2 + center.getBBox().x + center.getBBox().width) > tmp.right) {
-                    this.$d3.select(center)
-                      .text('')
-                    _.pull(show, 'center')
-                  }
-                }
-                if (series.colConf.labels[inOutFlag].right) {
-                  if (show.includes('center') || show.includes('left')) {
-                    this.$d3.select(right)
-                      .text(_.get(arrJ[j], series.colConf.labels[inOutFlag].right))
-                    if (show.includes('center')) {
-                      if ((width - offsetFontX + right.getBBox().x) < (width / 2 + center.getBBox().x + center.getBBox().width)) {
-                        this.$d3.select(right)
-                          .text('')
-                      }
-                    } else if (show.includes('left')) {
-                      if ((width - offsetFontX + right.getBBox().x) < (offsetFontX + left.getBBox().width)) {
-                        this.$d3.select(right)
-                          .text('')
-                      }
-                    }
-                  }
-                }
-              } else {
-                this.$d3.select(center)
-                  .attr('fill', (_.find(this.colorConfig, ['paramCode', this.colorTypes.fontAircraft]) || {})[this.colorParamValue] || this.colorDefault.font)
-                  .text(_.get(arrJ[j], series.colConf.aircraftLabel))
+                let left = fontGroup.querySelector('.fontLeft')
+                this.$d3.select(right).text(arrJ[j].afid)
+                  .attr('transform', `translate(${width - 40}, ${h / 4})`)
+                  .text(_.get(arrJ[j], series.colConf.labels[inOutFlag].right))
+                this.$d3.select(left).text(arrJ[j].afid)
+                  .attr('transform', `translate(40, ${h / 4})`)
+                  .text(_.get(arrJ[j], series.colConf.labels[inOutFlag].right))
               }
             }
           }
@@ -1043,7 +1001,11 @@ export default {
       return tmp
     },
     drawPath (colGroup, x, y, w, h, obj, colBlock) {
-      let inOutFlag = this.computedInOutFlag(obj)
+      // if(obj.dynamicResourceNo == 507) {
+      //
+      //
+      // }
+      // let inOutFlag = this.computedInOutFlag(obj)
       let tmp = {
         left: 0,
         right: w
@@ -1052,10 +1014,11 @@ export default {
       let float = 10
       let floatY = h / 4 - 0.5
       let floatX = h / 4
-      let t = h / 2
+      let t = 0
       let radius = 3
       let blockPath = []
       if (!obj.afid) {
+
         let points = []
         points.push(['M', x + t, y].join(' '))
         points.push(['H', x + w - t].join(' '))
@@ -1073,7 +1036,7 @@ export default {
         points.push(y + h / 2) */
         this.$d3.select(colBlock)
           .attr('d', points)
-          .attr('fill', (_.find(this.colorConfig, ['paramCode', this.colorTypes.aircraftOccupied]) || {})[this.colorParamValue] || this.colorDefault.col)
+          .attr('fill', "#4C4C4C")
           .attr('stroke', '#4C4C4C')
         return
       }
@@ -1110,7 +1073,9 @@ export default {
           colorsKey.pop()
         }
       }
+
       if (obj.confirmedFlag === 'Y') {
+
         // 确认：左右空白K和反向K
         let points = []
         points.push(['M', x + t, y].join(' '))
@@ -1120,13 +1085,7 @@ export default {
         points.push(['H', x + t].join(' '))
         points.push(['L', x, y + h / 2].join(' '))
         points.push('Z')
-        /* points.push(x + t)
-        points.push([y, x + w - t].join(' '))
-        points.push([y, x + w].join(' '))
-        points.push([y + h / 2, x + w - t].join(' '))
-        points.push([y + h, x + t].join(' '))
-        points.push([y + h, x].join(' '))
-        points.push(y + h / 2) */
+        blockPath = points
         blockPath = points
         this.$d3.select(colBlock)
           .attr('d', points)
@@ -1202,192 +1161,6 @@ export default {
           pathD && pathD.remove()
         }
       }
-      if (inOutFlag.includes('A') && obj.expressFlagA !== 'Y') { // 左箭头<
-        // 非快线
-        // 单进：左箭头<
-        // 一进一出：左右箭头<>
-        let path = colGroup.querySelector('.in')
-        if (!path) {
-          path = document.createElementNS(this.xmlns, 'path')
-          colGroup.appendChild(path)
-        }
-        let points = []
-        points.push(['M', x + offsetX + floatX, y + h / 6].join(' '))
-        points.push(['L', x + offsetX, y + h / 2].join(' '))
-        points.push(['L', x + offsetX + floatX, y + h - h / 6].join(' '))
-        /* points.push(x + offsetX + floatX)
-        points.push([y + floatY, x + offsetX].join(' '))
-        points.push([y + h / 2, x + offsetX + floatX].join(' '))
-        points.push(y - floatY + h) */
-        this.$d3.select(path)
-          .attr('class', 'in')
-          .attr('d', points)
-          .attr('fill', 'transparent')
-          .attr('stroke', '#4C4C4C')
-          .attr('stroke-width', 2)
-          .attr('stroke-linejoin', 'round')
-        tmp.left = x + offsetX + floatX
-      } else {
-        let path = colGroup.querySelector('.in')
-        path && path.remove()
-      }
-      if (inOutFlag.includes('D') && obj.expressFlagD !== 'Y') { // 右箭头>
-        // 非快线
-        // 单出：右箭头>
-        // 一进一出：左右箭头<>
-        let path = colGroup.querySelector('.out')
-        if (!path) {
-          path = document.createElementNS(this.xmlns, 'path')
-          colGroup.appendChild(path)
-        }
-        let points = []
-        points.push(['M', x + w - offsetX - floatX, y + floatY].join(' '))
-        points.push(['L', x + w - offsetX, y + h / 2].join(' '))
-        points.push(['L', x + w - offsetX - floatX, y + h - floatY].join(' '))
-        /* points.push(x + w - offsetX - floatX)
-        points.push([y + floatY, x + w - offsetX].join(' '))
-        points.push([y + h / 2, x + w - offsetX - floatX].join(' '))
-        points.push(y - floatY + h) */
-        this.$d3.select(path)
-          .attr('class', 'out')
-          .attr('d', points)
-          .attr('fill', 'transparent')
-          .attr('stroke', '#4C4C4C')
-          .attr('stroke-width', 2)
-          .attr('stroke-linejoin', 'round')
-        tmp.right = x + w - offsetX - floatX
-      } else {
-        let path = colGroup.querySelector('.out')
-        path && path.remove()
-      }
-      if (obj.expressFlagA === 'Y' && inOutFlag.includes('A')) { // 左三角◁
-        // 进港快线：左三角◁
-        let path = colGroup.querySelector('.in-express')
-        if (!path) {
-          path = document.createElementNS(this.xmlns, 'path')
-          colGroup.appendChild(path)
-        }
-        let points = []
-        points.push(['M', x + t * 2 / 3, y + h / 6].join(' '))
-        points.push(['L', x, y + h / 2].join(' '))
-        points.push(['L', x + t * 2 / 3, y + h - h / 6].join(' '))
-        points.push('Z')
-        /* points.push(x + t)
-        points.push([y, x].join(' '))
-        points.push([y + h / 2, x + t].join(' '))
-        points.push(y + h) */
-        this.$d3.select(path)
-          .attr('class', 'in-express')
-          .attr('d', points)
-          .attr('fill', '#4C4C4C')
-          .attr('stroke', 'transparent')
-        tmp.left = x + t
-      } else {
-        let path = colGroup.querySelector('.in-express')
-        path && path.remove()
-      }
-      if (obj.expressFlagD === 'Y' && inOutFlag.includes('D')) { // 右三角▷
-        // 出港快线：右三角▷
-        let path = colGroup.querySelector('.out-express')
-        if (!path) {
-          path = document.createElementNS(this.xmlns, 'path')
-          colGroup.appendChild(path)
-        }
-        let points = []
-        points.push(['M', x + w - t * 2 / 3, y + floatY].join(' '))
-        points.push(['L', x + w, y + h / 2].join(' '))
-        points.push(['L', x + w - t * 2 / 3, y + h - floatY].join(' '))
-        points.push('Z')
-        /* points.push(x + w - t)
-        points.push([y, x + w].join(' '))
-        points.push([y + h / 2, x + w - t].join(' '))
-        points.push(y + h) */
-        this.$d3.select(path)
-          .attr('class', 'out-express')
-          .attr('d', points)
-          .attr('fill', '#4C4C4C')
-          .attr('stroke', 'transparent')
-        tmp.right = x + w - t
-      } else {
-        let path = colGroup.querySelector('.out-express')
-        path && path.remove()
-      }
-      if (obj.lockedFlag === 'Y') { // 边框▭
-        // 锁定：边框▭
-        let path = colGroup.querySelector('.locked')
-        if (!path) {
-          path = document.createElementNS(this.xmlns, 'path')
-          colGroup.appendChild(path)
-        }
-        this.$d3.select(path)
-          .attr('class', 'locked')
-          .attr('d', blockPath)
-          // .attr('transform', `translate(${x}, ${y})`)
-          // .attr('width', w)
-          // .attr('height', h)
-          .attr('fill', 'transparent')
-          .attr('stroke', '#4C4C4C')
-          .attr('stroke-width', 1)
-      } else {
-        let path = colGroup.querySelector('.locked')
-        path && path.remove()
-      }
-      if (obj.relateF) { // 左三角◀
-        // 分割后：箭头 + 左三角◀
-        let path = colGroup.querySelector('.split-before')
-        if (!path) {
-          path = document.createElementNS(this.xmlns, 'path')
-          colGroup.appendChild(path)
-        }
-        let points = []
-        points.push(['M', x + floatX + float, y + floatY].join(' '))
-        points.push(['L', x + float, y + h / 2].join(' '))
-        points.push(['L', x + floatX + float, y - floatY + h].join(' '))
-        points.push('Z')
-        /* points.push(x + floatX + float)
-        points.push([y + floatY, x + float].join(' '))
-        points.push([y + h / 2, x + floatX + float].join(' '))
-        points.push(y - floatY + h) */
-        this.$d3.select(path)
-          .attr('class', 'split-before')
-          .attr('d', points)
-          .attr('fill', '#4C4C4C')
-          .attr('stroke', '#4C4C4C')
-          .attr('stroke-width', 2)
-          .attr('stroke-linejoin', 'round')
-        tmp.left = x + floatX + float
-      } else {
-        let path = colGroup.querySelector('.split-before')
-        path && path.remove()
-      }
-      if (obj.relateT) { // 右三角▶
-        // 分割前：箭头 + 右三角▶
-        let path = colGroup.querySelector('.split-after')
-        if (!path) {
-          path = document.createElementNS(this.xmlns, 'path')
-          colGroup.appendChild(path)
-        }
-        let points = []
-        points.push(['M', x + w - floatX - float, y + floatY].join(' '))
-        points.push(['L', x + w - float, y + h / 2].join(' '))
-        points.push(['L', x + w - floatX - float, y - floatY + h].join(' '))
-        points.push('Z')
-        /* points.push(x + w - floatX - float)
-        points.push([y + floatY, x + w - float].join(' '))
-        points.push([y + h / 2, x + w - floatX - float].join(' '))
-        points.push(y - floatY + h) */
-        this.$d3.select(path)
-          .attr('class', 'split-after')
-          .attr('d', points)
-          .attr('fill', '#4C4C4C')
-          .attr('stroke', '#4C4C4C')
-          .attr('stroke-width', 2)
-          .attr('stroke-linejoin', 'round')
-        tmp.right = x + w - floatX - float
-      } else {
-        let path = colGroup.querySelector('.split-after')
-        path && path.remove()
-      }
       return tmp
     },
     drawFont (fontKey, obj) {
@@ -1435,14 +1208,49 @@ export default {
       }
     },
     getFlightColor (obj) {
-      if (this.$parent.getFlightColor) {
-        return this.$parent.getFlightColor(obj, this.colorParamValue, this.colorDefault.col)
-      } else if (this.$parent.$parent.getFlightColor) {
-        return this.$parent.$parent.getFlightColor(obj, this.colorParamValue, this.colorDefault.col)
+      if (this.getFlightColors) {
+        return this.getFlightColors(obj, this.colorParamValue, this.colorDefault.col)
       }
       return []
     },
+    getFlightColors (obj, colorParamValue, colorDefaultCol) {
+      let arr = ['']
+      if (obj.progressStatusD === 'DEP') { // 起飞
+        arr[0] = (_.find(this.colorConfig, ['paramCode', this.colorTypes.DEP]) || {})[colorParamValue] || colorDefaultCol
+      } else if (obj.progressStatusA === 'ARR' || obj.inOutFlag === 'D') { // 本站
+        arr[0] = (_.find(this.colorConfig, ['paramCode', this.colorTypes.ARR]) || {})[colorParamValue] || colorDefaultCol
+      } else if (obj.progressStatusA === 'ONR') { // 前站起飞
+        arr[0] = (_.find(this.colorConfig, ['paramCode', this.colorTypes.ONR]) || {})[colorParamValue] || colorDefaultCol
+      } else { // 前站未起
+        arr[0] = (_.find(this.colorConfig, ['paramCode', this.colorTypes.disONR]) || {})[colorParamValue] || colorDefaultCol
+      }
+      if (['A', 'D'].includes(obj.inOutFlag)) {
+        if (obj.vipAFlag === 'Y' || obj.vipDFlag === 'Y') {
+          arr[0] = (_.find(this.colorConfig, ['paramCode', this.colorTypes.vip]) || {})[colorParamValue] || colorDefaultCol
+        }
+      } else {
+        if (obj.vipAFlag === obj.vipDFlag) {
+          if (obj.vipAFlag === 'Y') {
+            arr[0] = (_.find(this.colorConfig, ['paramCode', this.colorTypes.vip]) || {})[colorParamValue] || colorDefaultCol
+          }
+        } else {
+          arr.push(arr[0])
+          if (obj.vipAFlag === 'Y') {
+            arr[0] = (_.find(this.colorConfig, ['paramCode', this.colorTypes.vip]) || {})[colorParamValue] || colorDefaultCol
+          } else {
+            arr[1] = (_.find(this.colorConfig, ['paramCode', this.colorTypes.vip]) || {})[colorParamValue] || colorDefaultCol
+          }
+        }
+      }
+      return arr
+    },
+
+
+
+
+
     clickBlock (block, obj) {
+      console.log('==========', obj)
       this.$emit('clickBlock', obj)
     },
     contextmenuSelf (block, obj) {
