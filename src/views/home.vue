@@ -1,25 +1,25 @@
 <template>
   <div class="body">
     <div class="leftBox">
-      <gnattIndex  @flight="flightMsg"/>
+      <gnattIndex @flight="flightMsg" />
     </div>
     <div class="rightBox">
-      <Flight  :propData = "initFlight"></Flight>
+      <Flight :propData="initFlight"></Flight>
     </div>
   </div>
 </template>
 
 <script>
-import gantt from './ganttIndex'
-import Flight from './flightMsg'
+import gantt from "./ganttIndex";
+import Flight from "./flightMsg";
 import moment from "moment-mini";
-import Dgantt from './d3-gantt';
-import gnattIndex from './gantt-index'
-import example from  './example'
+import Dgantt from "./d3-gantt";
+import gnattIndex from "./gantt-index";
+import example from "./example";
 export default {
   data() {
     return {
-      initData: '',
+      initData: "",
       /* 甘特图页面布局 */
       style: {
         menuHeight: 34,
@@ -28,66 +28,64 @@ export default {
         rightWidth: 300,
         topHeight: 400,
         bottomHeight: 400,
-        cardMargin: 8
+        cardMargin: 8,
       },
       firstQuery: true,
       xConf: {
-        timeSection: [0.5, 10]
+        timeSection: [0.5, 10],
       },
       highlight: {
-        style: 'filter: url(#box-shadow-seriesKey);',
+        style: "filter: url(#box-shadow-seriesKey);",
         position: {
           visible: false,
           count: -1,
-          value: ''
+          value: "",
         },
-        data: []
+        data: [],
       },
       initFlight: {
-        title: '航班详情',
+        title: "航班详情",
         flgMsg: {
-          flightNo: '',
-          lugNo: '',
-          sta: '',
-          ata: '',
-          eta: '',
-          operationTime: '3',
-          line: ''
-        }
-      }
-    }
+          flightNo: "",
+          lugNo: "",
+          sta: "",
+          ata: "",
+          eta: "",
+          operationTime: "3",
+          line: "",
+        },
+      },
+    };
   },
-  components: { gantt, Flight , Dgantt, gnattIndex, example },
+  components: { gantt, Flight, Dgantt, gnattIndex, example },
   methods: {
     flightMsg(e) {
-      console.log('----------', e)
+      console.log("----------", e);
       this.initFlight = {
-        title: '航班详情',
-          flgMsg: {
-          flightNo: e[3],
-          lugNo: e[0],
-          sta: moment(e[9]).format('YYYY-MM-DD HH:mm'),
-          ata: moment(e[1]).format('YYYY-MM-DD HH:mm'),
-          eta: moment(e[2]).format('YYYY-MM-DD HH:mm'),
-          line:e[8],
-        }
-      }
-
-
-    }
-  }
-}
+        title: "航班详情",
+        flgMsg: {
+          flightNo: e.flightNumD,
+          lugNo: e.dynamicResourceNo,
+          sta: moment(e.ets).format("YYYY-MM-DD HH:mm"),
+          ata: moment(e.ete).format("YYYY-MM-DD HH:mm"),
+          eta: moment(e.ete).format("YYYY-MM-DD HH:mm"),
+          line: e.status == "F" ? "已停止运行" : "正在运行",
+        },
+      };
+    },
+  },
+};
 </script>
 
 <style lang="scss">
-@import '@/style/custom/var.global';
-@import '@/style/gantt';
+@import "@/style/custom/var.global";
+@import "@/style/gantt";
 .body {
   width: 100%;
   height: 100vh;
   padding: 20px 20px !important;
   box-sizing: border-box;
-  background-image: url( '../assets/bg.jpg');
+  background-image: url("../assets/bg.jpg");
   text-align: center;
   display: flex;
   justify-content: space-between;

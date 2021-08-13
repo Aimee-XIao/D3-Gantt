@@ -12,7 +12,7 @@
             <p>{{ val }}</p>
           </div>
           <div class="content-item-box" v-if=" key == 'line' ">
-            <p>航线三字码</p>
+            <p>状态</p>
             <p>{{ val }}</p>
           </div>
           <div class="content-item-box" v-if=" key == 'lugNo' ">
@@ -45,27 +45,6 @@ export default {
       },
     },
   },
-  mounted() {
-    let rang = ""
-    let ata = this.propData.flgMsg.ata;
-    let sta = this.propData.flgMsg.sta;
-    let eta = this.propData.flgMsg.eta;
-    let seconds = this.propData.flgMsg.operationTime;
-
-    console.log("this.aa(sta, seconds)", this.aa(sta, 3))
-    rang = ata ? this.aa(ata, seconds) : (eta ? this.aa(eta, seconds): (sta? this.aa(sta, seconds): '--'))
-    // this.$set(this.propData.flgMsg, "rang", rang)
-    // delete this.propData.flgMsg.eta;
-    delete this.propData.flgMsg.ata;
-    // delete this.propData.flgMsg.operationTime;
-    console.log(this.propData.flgMsg);
-  },
-  methods: {
-    aa(a, b){
-      let newTime = moment(a);
-      return newTime.add(b, "minutes").format("YYYY-MM-DD HH:MM")
-    }
-  }
 }
 </script>
 
