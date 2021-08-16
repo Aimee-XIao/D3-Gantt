@@ -45,6 +45,9 @@ export default {
       },
     },
   },
+  mounted() {
+    console.log('============', this.propData)
+  }
 }
 </script>
 

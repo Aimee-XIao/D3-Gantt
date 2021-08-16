@@ -290,7 +290,7 @@ var dataArr = [
         ate: null,
         exectDateA: null,
         exectDateD: null,
-        dynamicResourceNo: "105",
+        dynamicResourceNo: "104",
         dynamicResourceId: 15290796,
         confirmedFlag: "Y",
         lockedFlag: "N",

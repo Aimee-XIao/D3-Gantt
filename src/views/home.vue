@@ -60,16 +60,15 @@ export default {
   components: { gantt, Flight, Dgantt, gnattIndex, example },
   methods: {
     flightMsg(e) {
-      console.log("----------", e);
       this.initFlight = {
         title: "航班详情",
         flgMsg: {
           flightNo: e.flightNumD,
           lugNo: e.dynamicResourceNo,
-          sta: moment(e.ets).format("YYYY-MM-DD HH:mm"),
-          ata: moment(e.ete).format("YYYY-MM-DD HH:mm"),
-          eta: moment(e.ete).format("YYYY-MM-DD HH:mm"),
-          line: e.status == "F" ? "已停止运行" : "正在运行",
+          sta: e.ets ? moment(e.ets).format("YYYY-MM-DD HH:mm"): '',
+          ata: e.ete ? moment(e.ete).format("YYYY-MM-DD HH:mm") : '',
+          eta: e.ete? moment(e.ete).format("YYYY-MM-DD HH:mm"): '',
+          line: e.status? ( e.status == "F" ? "已停止运行" : "正在运行"): '',
         },
       };
     },

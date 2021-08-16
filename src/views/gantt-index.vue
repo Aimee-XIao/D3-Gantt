@@ -17,7 +17,7 @@
       ">当前时间为：{{xAxis.now}} </p>
     <y-select
       v-model="terminal"
-      placeholder="select one country"
+      placeholder="请选择"
       style="
         width: 130px;
         position: absolute;
@@ -130,7 +130,7 @@ export default {
           label: "T3",
         },
       ],
-      terminal: "",
+      terminal: undefined,
       refresh: [],
       xAxis: {
         timeSpace: 3,
@@ -272,7 +272,7 @@ export default {
         .on("mouseleave", function () {
           mouseleave(bottom, "Bottom");
         });
-       
+
             let now = new Date(this.xAxis.now.substr(0, 16) + ":00");
             let sTime = new Date(this.xAxis.start.substr(0, 16) + ":00");
               let ri =
@@ -299,6 +299,7 @@ export default {
       };
     },
     handleChange(value) {
+      this.$emit("flight", {});
       if(!value) {
           this.$set(this, 'dataArrs', dataArr)
       this.$set(this, "refresh", ["all"]);
@@ -310,7 +311,7 @@ export default {
             newArr.push(dataArr[i])
           }
       }
-     
+
       this.$set(this, 'dataArrs', newArr)
       this.$set(this, "refresh", ["all"]);
       // this.dataArrs = newArr
