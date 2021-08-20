@@ -31,8 +31,9 @@ export default {
   },
   computed: {
     topY() {
-      return function (i) {
-        return i * this.yAxis.transStyle.height;
+      return function (i, newHeight) {
+        return newHeight
+        //     return i  * this.yAxis.transStyle.height;
       };
     },
     margin() {
@@ -105,22 +106,51 @@ export default {
             .attr("x2", this.yAxis.transStyle.width - this.margin.right)
             .attr("y2", 0);
         }
-        let memberGroup, block;
+        let memberGroup, block,newHeight = 0;
         for (let i = 0; i < data.length; i++) {
           let obj = data[i];
-          let info = obj.standNo;
           let id = obj.standNo;
-          let topY = this.topY(i) + this.yAxis.boundaryGap[0];
+          let info = obj.standNo + "("+ obj.terminal+")";
+          let gadHeight = obj.dataArray && obj.dataArray.length> 1 ? this.yAxis.transStyle.height * obj.dataArray.length : this.yAxis.transStyle.height
+          let oLen = data[i - 1] && data[i - 1].dataArray.length
+          if(i == 0) {
+            newHeight = 0
+          } else {
+            if(oLen == 0) {
+              newHeight = newHeight +  40
+            } else {
+              newHeight = newHeight + oLen * 40
+            }
+          }
+          let topY = this.topY(i, newHeight) + this.yAxis.boundaryGap[0];
           memberGroup = this.categotyMemberGroup.cloneNode(true);
           this.$refs.categoryAxis.appendChild(memberGroup);
           block = memberGroup.querySelector(".categoryBlock");
+          let rightClick = this.rightClick;
+          let leftClick = this.leftClick;
+          let that = this
           this.$d3
             .select(memberGroup)
             .attr("id", "m" + id)
             .attr("transform", `translate(0, ${topY})`)
             .attr("width", this.yAxis.transStyle.width)
-            .attr("height", this.yAxis.transStyle.height);
-          let clickBlock = this.clickBlock;
+            .attr("height", gadHeight)
+            .on("contextmenu", function () {
+              that.$d3.event.preventDefault()
+                if (obj.dataArray.length) {
+                  rightClick(block, obj, that.$d3.event);
+                }else {
+                  rightClick(block, obj, that.$d3.event);
+                }
+                if(that.$d3.event.button == 1) {
+                  leftClick(block,that.$d3.event);
+                }
+            })
+            .on("click", function () {
+              that.$d3.event.preventDefault()
+              leftClick(block,that.$d3.event);
+            })
+
           this.$d3
             .select(block)
             .attr("transform", `translate(${this.margin.left}, 0)`)
@@ -130,7 +160,7 @@ export default {
             )
             .attr(
               "height",
-              this.yAxis.transStyle.height -
+              gadHeight -
                 this.margin.top -
                 this.margin.bottom
             )
@@ -138,11 +168,7 @@ export default {
               return i % 2 == 0 ? "#b1dff6" : "#c6e5f5";
             })
             .attr("stroke-width", 0)
-            .on("click", function () {
-              if (obj.dataArray.length) {
-                clickBlock(block, obj.dataArray[0]);
-              }
-            });
+
 
           let label = memberGroup.querySelector(".categoryLabel");
           this.$d3
@@ -150,7 +176,7 @@ export default {
             .attr(
               "transform",
               `translate(${this.yAxis.transStyle.width / 2}, ${
-                this.yAxis.transStyle.height / 2
+                gadHeight / 2
               })`
             )
             .attr("font-size", this.yAxis.fontStyle.fontSize)
@@ -159,16 +185,18 @@ export default {
           this.$d3
             .select(memberGroup.querySelector(".rowLine"))
             .attr("x1", this.margin.left)
-            .attr("y1", this.yAxis.transStyle.height - this.margin.bottom)
+            .attr("y1", gadHeight - this.margin.bottom)
             .attr("x2", this.yAxis.transStyle.width - this.margin.right)
-            .attr("y2", this.yAxis.transStyle.height - this.margin.bottom);
+            .attr("y2", gadHeight - this.margin.bottom);
         }
       });
     },
-    clickBlock(block, obj) {
-      console.log("obj", obj);
-      this.$emit("clickBlock", obj);
+    rightClick(block, obj, event) {
+      this.$emit('rightClick', obj, event)
     },
+    leftClick(block, obj) {
+      this.$emit('leftClick', obj)
+    }
   },
 };
 </script>

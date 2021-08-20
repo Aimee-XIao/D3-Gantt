@@ -8,6 +8,9 @@
       <p style=" margin-right: 20px;">  <p style="width: 20px;
     height: 10px;
     background: rgb(144, 255, 150);margin-right: 10px;"></p>正在运行</p>
+      <p style=" margin-right: 20px;">  <p style="width: 20px;
+    height: 10px;
+    background: rgb(14, 124, 237);margin-right: 10px;"></p>待运行</p>
     </div>
     <p  style="
         position: absolute;
@@ -96,10 +99,21 @@
           id="yAxisBottom"
           :refresh="refresh"
           :series="dataArrs"
-            @clickBlock="clickBlock"
+          @rightClick="rightClick"
+          @leftClick="leftClick"
         ></yAxis>
       </svg>
     </svg>
+    <RightMenu v-if="visable" :currentObj="currentObj" :selfStyle="selfStyle" @config="config"></RightMenu>
+    <y-modal
+      :title="modal.title"
+      v-model="modal.visible"
+      :footer="null"
+    >
+      <formModal :list="lists" :formData="ruleForm"  @submit="submit" @cancle="cancle"></formModal>
+    </y-modal>
+
+
   </div>
 </template>
 <script>
@@ -107,15 +121,116 @@ import "../assets/gsap.min.js";
 import yAxis from "../components/yAxis";
 import xAxis from "../components/xAxis";
 import mArea from "../components/cArea";
+import RightMenu from "../components/fightContent"
 import { dataArr } from "../json/datas";
+import formModal from '../components/formModal.vue'
+
+import moment from "moment-mini";
 export default {
   components: {
     yAxis,
     xAxis,
     mArea,
+    RightMenu,
+    formModal
   },
   data() {
     return {
+      lists:[],
+      modal: {
+        visible: false,
+        title: '',
+        data: {}
+      },
+      ruleForm:{},
+      currentObj:{},
+      timelist:[
+        {
+          key: 'flightNumD',
+          type: 'text',
+          label:'航班号',
+          disabled: false,
+          placeholder: '请输入'
+        },
+        {
+          key: 'dynamicResourceNo',
+          type: 'text',
+          label:'行李转盘号',
+          disabled: true,
+          placeholder: '请输入'
+        },
+        {
+          key:'std',
+          type: 'datePicker',
+          label:'开始运行时间',
+          showTime: true,
+          placeholder: '请选择'
+        },
+        {
+          key:'ete',
+          type: 'datePicker',
+          label:'结束运行时间',
+          showTime: true,
+          placeholder: '请选择'
+        }
+      ],
+      standlist:[
+        {
+          key: 'dynamicResourceNo',
+          type: 'text',
+          label:'行李转盘号',
+          disabled: true,
+          placeholder: '请输入'
+        },
+        {
+          key: 'isNear',
+          type: 'radio',
+          label:'是否近机位',
+          arr: [
+            {
+              isNear: 'Y',
+              label: '是'
+            },
+            {
+              isNear: 'N',
+              label: '否'
+            }
+          ]
+        },
+        {
+          key:'seat',
+          type: 'select',
+          label:'机位选择',
+          placeholder: '请选择',
+          arr: [
+            {
+              seat: '21L',
+              isNear: 'Y',
+              seatName: '普通机位'
+            },
+            {
+              seat: '124',
+              isNear: 'N',
+              seatName: '货运机位'
+            },
+            {
+              seat: '126',
+              isNear: 'N',
+              seatName: '普通机位'
+            },
+            {
+              seat: '129',
+              isNear: 'Y',
+              seatName: '临时机位'
+            }
+          ]
+        }
+      ],
+      visable:false,
+      selfStyle:{
+        top:"",
+        left: "",
+      },
       terminalArr: [
         {
           id: "T1",
@@ -203,7 +318,13 @@ export default {
   },
   computed: {
     svgHeight() {
-      return dataArr.length * this.yAxis.transStyle.height;
+      let len = dataArr.length
+      for(let i = 0; i< dataArr.length; i++){
+        if(dataArr[i].dataArray.length > 1) {
+          len = len + dataArr[i].dataArray.length - 1
+        }
+      }
+      return len * this.yAxis.transStyle.height;
     },
     computeLeftTopHeight() {
       return (
@@ -251,7 +372,10 @@ export default {
           this.markLineBottom.y -
           this.yAxis.boundaryGap[1]
       );
+      var that = this
       this.$refs.svgBottomContent.onscroll = function () {
+
+        that.visable = false
         window.TweenMax.to("#xAxisBottom", 0, {
           x: -this.scrollLeft,
         });
@@ -291,7 +415,75 @@ export default {
     });
   },
 
+
   methods: {
+    submit(form) {
+      for(let key in form) {
+        if(key == 'ete' ||  key == 'std') {
+          form[key] = moment(form[key]).format('YYYY-MM-DDTHH:mm')
+        }
+      }
+      for(let i=0; i < dataArr.length; i++){
+        if(dataArr[i].standNo == form.dynamicResourceNo){
+          let obj = {
+            dynamicFlightIdA: 45482,
+            dynamicFlightIdD: 45483,
+            flightNumA: form.flightNumD,
+            flightNumD: form.flightNumD,
+            inOutFlag: "A|D",
+            afid: "W/Z-CN7669-20201031-A|W/Z-CN7670-20201031-D",
+            sta: moment(form.std).format('YYYY-MM-DDTHH:mm'),
+            eta: "2020-10-31T10:10",
+            ata: "2020-10-31T10:10",
+            std: moment(form.std).format('YYYY-MM-DDTHH:mm'),
+            etd: null,
+            atd: null,
+            ets: moment(form.std).format('YYYY-MM-DDTHH:mm'),
+            ete: moment(form.ete).format('YYYY-MM-DDTHH:mm'),
+            ats: moment(form.std).format('YYYY-MM-DDTHH:mm'),
+            ate: null,
+            exectDateA: null,
+            exectDateD: null,
+            dynamicResourceNo: form.dynamicResourceNo,
+          }
+          dataArr[i].dataArray.push(obj)
+        }
+      }
+      this.$set(this, 'dataArrs', dataArr)
+      this.$set(this, "refresh", ["all"]);
+
+      this.$set(this.modal, 'visible', false)
+    },
+    cancle(){
+      this.$set(this.modal, 'visible', false)
+    },
+    config(item) {
+      if(item.id == '01') {
+        this.lists = this.standlist
+      } else {
+        this.lists = this.timelist
+      }
+      this.$set(this.modal, 'title', item.title)
+      this.$set(this.modal, 'visible', true)
+      if(this.currentObj.standNo && this.currentObj.dataArray && this.currentObj.dataArray.length > 0) {
+        this.ruleForm = this.currentObj.dataArray[0]
+      }else {
+        this.ruleForm = {}
+        this.$set(this.ruleForm, 'dynamicResourceNo', this.currentObj.standNo)
+      }
+    },
+    leftClick() {
+      this.visable = false
+    },
+    rightClick(obj, event) {
+      this.visable = false
+      this.$nextTick(()=> {
+        this.currentObj = obj
+        this.$set(this.selfStyle, 'top', event.y)
+        this.$set(this.selfStyle, 'left', event.x)
+        this.visable = true
+      })
+    },
     lineX() {
       return function (i) {
         let xAxis = this.xAxis;
@@ -301,7 +493,7 @@ export default {
     handleChange(value) {
       this.$emit("flight", {});
       if(!value) {
-          this.$set(this, 'dataArrs', dataArr)
+      this.$set(this, 'dataArrs', dataArr)
       this.$set(this, "refresh", ["all"]);
       return
       }
@@ -321,6 +513,7 @@ export default {
       this.$emit("flight", obj);
     },
     customScroll() {
+      this.visable = false
       // this.$set(this.menuFlight, 'show', false)
       // this.$set(this.menuStand, 'show', false)
     },

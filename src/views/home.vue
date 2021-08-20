@@ -10,39 +10,12 @@
 </template>
 
 <script>
-import gantt from "./ganttIndex";
 import Flight from "./flightMsg";
 import moment from "moment-mini";
-import Dgantt from "./d3-gantt";
 import gnattIndex from "./gantt-index";
-import example from "./example";
 export default {
   data() {
     return {
-      initData: "",
-      /* 甘特图页面布局 */
-      style: {
-        menuHeight: 34,
-        contentHeight: 0,
-        leftWidth: 2000,
-        rightWidth: 300,
-        topHeight: 400,
-        bottomHeight: 400,
-        cardMargin: 8,
-      },
-      firstQuery: true,
-      xConf: {
-        timeSection: [0.5, 10],
-      },
-      highlight: {
-        style: "filter: url(#box-shadow-seriesKey);",
-        position: {
-          visible: false,
-          count: -1,
-          value: "",
-        },
-        data: [],
-      },
       initFlight: {
         title: "航班详情",
         flgMsg: {
@@ -57,7 +30,7 @@ export default {
       },
     };
   },
-  components: { gantt, Flight, Dgantt, gnattIndex, example },
+  components: {  Flight, gnattIndex},
   methods: {
     flightMsg(e) {
       this.initFlight = {
@@ -68,7 +41,7 @@ export default {
           sta: e.ets ? moment(e.ets).format("YYYY-MM-DD HH:mm"): '',
           ata: e.ete ? moment(e.ete).format("YYYY-MM-DD HH:mm") : '',
           eta: e.ete? moment(e.ete).format("YYYY-MM-DD HH:mm"): '',
-          line: e.status? ( e.status == "F" ? "已停止运行" : "正在运行"): '',
+          line: e.status? ( e.status == "F" ? "已停止运行" : (e.status == 'Y'? "正在运行" : '待运行')): '',
         },
       };
     },

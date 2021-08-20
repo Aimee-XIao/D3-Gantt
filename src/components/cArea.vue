@@ -58,6 +58,7 @@ import _ from "lodash";
 import { selectIdByCssFilter } from "../util/util";
 import { colorConfigArr } from "../json/colorConfig";
 import xAxis from "./xAxis";
+import { dataArr } from "../json/datas";
 export default {
   name: "cArea",
   props: ["xAxis", "yAxis", "series", "refresh"],
@@ -102,7 +103,7 @@ export default {
         data: this.series,
         rowConf: {
           id: "standNo",
-          value: "dataArray",
+          value: "arr",
         },
         colConf: {
           e: ["ate", "ete"],
@@ -160,6 +161,15 @@ export default {
     };
   },
   computed: {
+    svgHeight() {
+      let len = this.series.length
+      for(let i = 0; i< this.series.length; i++){
+        if(this.series[i].dataArray.length > 1) {
+          len = len + this.series[i].dataArray.length - 1
+        }
+      }
+      return len * this.yAxis.transStyle.height;
+    },
     randomStr() {
       return Math.random().toString(36).substr(2, 15);
     },
@@ -280,9 +290,11 @@ export default {
     },
     series: {
       handler(newData) {
+        console.log('yt7y',newData)
         this.$set(this.seriesObj, "data", newData);
         this.refreshGantt("all");
       },
+      deep: true
     },
     seriesRef(bool) {
       let xAxis = this.xAxis;
@@ -343,9 +355,10 @@ export default {
           let sTime = new Date(this.start.substr(0, 16) + ":00");
           let lTime = new Date(this.now.substr(0, 16) + ":00");
           let i = (lTime.getTime() - sTime.getTime()) / xAxis.timestempUnit;
-          let height =
-            (series.data || []).length * yAxis.transStyle.height +
-            yAxis.boundaryGap[0];
+          // let height =
+          //   (series.data || []).length * yAxis.transStyle.height +
+          //   yAxis.boundaryGap[0];
+          let height = this.svgHeight
           this.$nextTick(() => {
             this.rectHidden =
               this.$refs[this.cId + "customRow"].querySelector(
@@ -478,6 +491,7 @@ export default {
       }
     },
     init() {
+
       let xAxis = this.xAxis;
       let yAxis = this.yAxis;
       let series = this.seriesObj;
@@ -485,8 +499,48 @@ export default {
       let rowGroup, colGroup, colBlock;
       let h = yAxis.transStyle.height;
       // let h  = 20
-      let arrI = series.data || [];
+      let arrI = []
+      for(let i = 0; i< series.data.length; i++){
+        let newObj = {
+          arr:[],
+          isUseable: "",
+          isBridge: "",
+          standNo: "",
+          terminal: "",
+        }
+        if(series.data[i].dataArray.length > 1) {
+          let obj = series.data[i].dataArray
+         for(let j=0; j < obj.length; j++){
+           newObj = {
+             arr:[],
+             isUseable: "",
+             isBridge: "",
+             standNo: "",
+             terminal: "",
+           }
+           newObj.arr = [obj[j]]
+             newObj.isUseable = series.data[i].isUseable
+             newObj.isBridge = series.data[i].isBridge
+             newObj.standNo = series.data[i].standNo
+             newObj.terminal = series.data[i].terminal
+             arrI.push(newObj)
+
+         }
+        }else {
+          newObj.arr = series.data[i].dataArray
+          newObj.isUseable = series.data[i].isUseable
+          newObj.isBridge = series.data[i].isBridge
+          newObj.standNo = series.data[i].standNo
+          newObj.terminal = series.data[i].terminal
+          arrI.push(newObj)
+        }
+      }
+      // let arrI = series.data || [];
+
       for (let i = 0; i < arrI.length; i++) {
+
+        // let h = obj.dataArray && obj.dataArray.length> 1 ? this.yAxis.transStyle.height * obj.dataArray.length : this.yAxis.transStyle.height
+        // newHeight = newHeight + h
         let topY = this.topY(i) + yAxis.boundaryGap[0];
         rowGroup = this.rowGroup.cloneNode(true);
         this.$refs[this.cId + "customRow"].appendChild(rowGroup);
@@ -1374,10 +1428,11 @@ export default {
       }
       let colorArr = [
         "rgb(144, 255, 150)",
-        "rgb(76, 76, 76)",
+        "rgb(14, 124, 237)",
         "rgb(177, 223, 246)",
       ];
       let color = colorArr[0];
+
       let now = new Date(this.xAxis.now.substr(0, 16) + ":00");
       let end = new Date(_.get(obj, e).substr(0, 16) + ":00");
       let start = new Date(_.get(obj, s).substr(0, 16) + ":00");
@@ -1388,7 +1443,7 @@ export default {
       if (start > now) {
         this.$set(obj, "status", "N");
         color = colorArr[1];
-        return;
+        // return;
       } else if (end < now) {
         this.$set(obj, "status", "F");
         color = colorArr[2];
