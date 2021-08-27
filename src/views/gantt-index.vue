@@ -11,6 +11,7 @@
       <p style=" margin-right: 20px;">  <p style="width: 20px;
     height: 10px;
     background: rgb(14, 124, 237);margin-right: 10px;"></p>待运行</p>
+      <p style=" margin-right: 20px;">  <p style="width: 20px; height: 10px; background:rgba(245,3,3,0.6);margin-right: 10px;"></p>时间冲突</p>
     </div>
     <p  style="
         position: absolute;
@@ -18,6 +19,11 @@
         left: 40px;
         z-index: 3;
       ">当前时间为：{{xAxis.now}} </p>
+    <div class="btn">
+      缩放
+      <y-button :disabled="xAxis.timeSpace==3" type="primary" class="add-box" @click="add">+</y-button>
+      <y-button :disabled="xAxis.timeSpace==0.5" class="add-box" @click="reduce">-</y-button>
+    </div>
     <y-select
       v-model="terminal"
       placeholder="请选择"
@@ -99,6 +105,7 @@
           id="yAxisBottom"
           :refresh="refresh"
           :series="dataArrs"
+          :yAxis="yAxis"
           @rightClick="rightClick"
           @leftClick="leftClick"
         ></yAxis>
@@ -112,8 +119,6 @@
     >
       <formModal :list="lists" :formData="ruleForm"  @submit="submit" @cancle="cancle"></formModal>
     </y-modal>
-
-
   </div>
 </template>
 <script>
@@ -137,6 +142,8 @@ export default {
   data() {
     return {
       lists:[],
+      scaleNum: 1,
+      disabledB: false,
       modal: {
         visible: false,
         title: '',
@@ -250,7 +257,7 @@ export default {
       xAxis: {
         timeSpace: 3,
         timeMultSpace: 1,
-        timestempUnit: 60 * 1000,
+        timestempUnit:  60 * 1000,
         minutesInHour: 60, // 一小时 n s
         timeSMult: 0.5,
         lineStyle: { l: 10.5, m: 7, s: 5 },
@@ -300,6 +307,8 @@ export default {
         transStyle: {
           width: 130,
           height: 40,
+          interval: 10,
+          column: 20
         },
         conf: {
           id: "standNo",
@@ -318,13 +327,15 @@ export default {
   },
   computed: {
     svgHeight() {
-      let len = dataArr.length
-      for(let i = 0; i< dataArr.length; i++){
-        if(dataArr[i].dataArray.length > 1) {
-          len = len + dataArr[i].dataArray.length - 1
+        let len = this.dataArrs.length
+        let h = 0
+        for(let i = 0; i< this.dataArrs.length; i++){
+          if(this.dataArrs[i].len > 1) {
+            len = len - 1
+            h = h + this.dataArrs[i].len * this.yAxis.transStyle.column + (this.dataArrs[i].len + 1) * this.yAxis.transStyle.interval
+          }
         }
-      }
-      return len * this.yAxis.transStyle.height;
+        return len * this.yAxis.transStyle.height + h;
     },
     computeLeftTopHeight() {
       return (
@@ -415,8 +426,51 @@ export default {
     });
   },
 
-
   methods: {
+    reduce() {
+      this.xAxis.timeSpace -= 0.5
+      this.xAxis.width -= 720
+      let now = new Date(this.xAxis.now.substr(0, 16) + ":00");
+      let sTime = new Date(this.xAxis.start.substr(0, 16) + ":00");
+      let ri =
+        (now.getTime() - sTime.getTime()) / this.xAxis.timestempUnit;
+      let fama =  this.xAxis.timeSpace - 0.5 > 1 ? this.xAxis.timeSpace - 0.5 : 1
+      let rX = ri * fama
+      let width = rX;
+
+      let dragScroll = null
+      if (this.$refs.svgBottomContent) {
+        dragScroll = {
+          top: this.$refs.svgBottomContent.scrollTop,
+          left:  width
+        }
+      }
+      dragScroll && this.$refs.svgBottomContent && this.$refs.svgBottomContent.scrollTo(dragScroll)
+
+      this.$set(this, "refresh", ["all"]);
+    },
+    add() {
+      this.xAxis.timeSpace += 0.5
+      this.xAxis.width += 720
+      let now = new Date(this.xAxis.now.substr(0, 16) + ":00");
+      let sTime = new Date(this.xAxis.start.substr(0, 16) + ":00");
+      let ri =
+        (now.getTime() - sTime.getTime()) / this.xAxis.timestempUnit;
+      let fama =  this.xAxis.timeSpace + 0.5 < 2.34 ? this.xAxis.timeSpace + 0.5 : 2.34
+      let rX = ri * fama
+      let width = rX;
+
+      let dragScroll = null
+      if (this.$refs.svgBottomContent) {
+        dragScroll = {
+          top: this.$refs.svgBottomContent.scrollTop,
+          left:  width
+        }
+      }
+      dragScroll && this.$refs.svgBottomContent && this.$refs.svgBottomContent.scrollTo(dragScroll)
+
+      this.$set(this, "refresh", ["all"]);
+    },
     submit(form) {
       for(let key in form) {
         if(key == 'ete' ||  key == 'std') {
@@ -503,7 +557,6 @@ export default {
             newArr.push(dataArr[i])
           }
       }
-
       this.$set(this, 'dataArrs', newArr)
       this.$set(this, "refresh", ["all"]);
       // this.dataArrs = newArr
@@ -569,11 +622,27 @@ export default {
   overflow: hidden;
   position: relative;
 }
+.btn {
+  position: absolute;
+  top: 10px;
+  right: 40px;
+  z-index: 3;
+  display: flex;
+  justify-content: flex-end;
+  .add-box {
+    width: 30px;
+    height: 20px;
+    border: 1px solid #ccc;
+    margin-left: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
 .svg-scroll::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
-
 .svg-scroll::-webkit-scrollbar-track {
   background-color: #e6e6e7;
   -webkit-border-radius: 5px;

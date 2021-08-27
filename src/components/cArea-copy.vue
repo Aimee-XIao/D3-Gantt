@@ -15,6 +15,18 @@
       <g class="colGroup">
         <path d="" class="colBlock"></path>
         <g class="fontGroup">
+          <text
+            class="fontLeft"
+            :fill="'#000'"
+            stroke="none"
+            style="
+              font-size: 14px;
+              text-shadow: #fff 1px 0 0, #fff 0px 1px 0, #fff -1px 0 0,
+                #fff 0 -1px 0;
+              text-anchor: start;
+              dominant-baseline: ideographic;
+            "
+          ></text>
           <!--          <text class="fontCenter" :fill="'#000'" stroke="none" style="font-size: 18px; text-shadow: #fff 1px 0 0, #fff 0px 1px 0, #fff -1px 0 0, #fff 0 -1px 0; text-anchor: middle; dominant-baseline: ideographic;"></text>-->
           <text
             class="fontRight"
@@ -151,12 +163,12 @@ export default {
   },
   computed: {
     svgHeight() {
-      let len = this.seriesObj.data.length
+      let len = dataArr.length
       let h = 0
-      for(let i = 0; i< this.seriesObj.data.length; i++){
-        if(this.seriesObj.data[i].len > 1) {
+      for(let i = 0; i< dataArr.length; i++){
+        if(dataArr[i].len > 1) {
           len = len - 1
-          h = h + this.seriesObj.data[i].len * this.yAxis.transStyle.column + (this.seriesObj.data[i].len + 1) * this.yAxis.transStyle.interval
+          h = h + dataArr[i].len * this.yAxis.transStyle.column + (dataArr[i].len + 1) * this.yAxis.transStyle.interval
         }
       }
       return len * this.yAxis.transStyle.height + h;
@@ -282,6 +294,7 @@ export default {
     },
     series: {
       handler(newData) {
+        console.log('yt7y',newData)
         this.$set(this.seriesObj, "data", newData);
         this.refreshGantt("all");
       },
@@ -327,13 +340,11 @@ export default {
     "xAxis.width": {
       handler(width) {
         let xAxis = this.xAxis;
-        this.refreshGantt("all");
         this.$d3.select(this.rectHidden).attr("width", width);
         this.$d3
           .select(this.rectMark)
           .attr("width", width - xAxis.boundaryGap[0] - xAxis.boundaryGap[1]);
       },
-      deep: true
     },
   },
   methods: {
@@ -676,14 +687,22 @@ export default {
               this.$d3
                 .select(fontGroup)
                 .attr("transform", `translate(0,  ${fontY})`);
-
+              // let center = fontGroup.querySelector('.fontCenter')
+              // this.$d3.select(center)
+              //   .attr('transform', `translate(${width / 2}, ${blockH / 2})`)
               if (arrJ[j].afid) {
                 let inOutFlag = this.computedInOutFlag(arrJ[j]);
                 let right = fontGroup.querySelector(".fontRight");
+                let left = fontGroup.querySelector(".fontLeft");
                 this.$d3
                   .select(right)
                   .text(arrJ[j].afid)
                   .attr("transform", `translate(${width - 40}, ${chargeY})`)
+                  .text(_.get(arrJ[j], series.colConf.labels[inOutFlag].right));
+                this.$d3
+                  .select(left)
+                  .text(arrJ[j].afid)
+                  .attr("transform", `translate(40, ${chargeY})`)
                   .text(_.get(arrJ[j], series.colConf.labels[inOutFlag].right));
               }
             }
@@ -1417,7 +1436,7 @@ export default {
         .attr("height", height)
         .attr("transform", `translate(${lX}, ${this.margin.top})`)
         .attr("stroke-width", 0)
-        .attr("fill", "rgba(245,3,3,0.6)")
+        .attr("fill", "red")
     },
     drawPath(colGroup, x, y, w, h, obj, colBlock) {
       let e = ["ate", "ete"];

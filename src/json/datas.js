@@ -1,3 +1,4 @@
+import _ from "lodash";
 var dataArr = [
   {
     dataArray: [
@@ -86,15 +87,15 @@ var dataArr = [
         flightNumD: "MU2367",
         inOutFlag: "A|D",
         afid: "W/Z-CN7669-20201031-A|W/Z-CN7670-20201031-D",
-        sta: "2021-08-11T00:30",
+        sta: "2021-08-11T02:30",
         eta: "2020-10-31T10:10",
         ata: "2020-10-31T10:10",
-        std: "2021-08-11T00:30",
+        std: "2021-08-11T02:30",
         etd: null,
         atd: null,
-        ets: "2021-08-11T00:30",
-        ete: "2021-08-11T02:05",
-        ats: "2021-08-11T00:30",
+        ets: "2021-08-11T02:30",
+        ete: "2021-08-11T04:05",
+        ats: "2021-08-11T02:30",
         ate: null,
         exectDateA: null,
         exectDateD: null,
@@ -247,6 +248,62 @@ var dataArr = [
         gateI: null,
         stand: null,
       },
+      {
+        dynamicFlightIdA: 45482,
+        dynamicFlightIdD: 45483,
+        flightNumA: "MU2567",
+        flightNumD: "MU2567",
+        inOutFlag: "A|D",
+        afid: "W/Z-CN7669-20201031-A|W/Z-CN7670-20201031-D",
+        sta: "2021-08-11T07:50",
+        eta: "2020-10-31T10:10",
+        ata: "2020-10-31T10:10",
+        std: "2021-08-11T07:50",
+        etd: null,
+        atd: null,
+        ets: "2021-08-11T07:50",
+        ete: "2021-08-11T09:30",
+        ats: "2021-08-11T07:50",
+        ate: null,
+        exectDateA: null,
+        exectDateD: null,
+        dynamicResourceNo: "101",
+        dynamicResourceId: 15290796,
+        confirmedFlag: "Y",
+        lockedFlag: "N",
+        splitFlag: "Y",
+        relateT: false,
+        relateF: true,
+        aircraftNo: "5482",
+        aircraftType: "B738",
+        progressStatusA: "ARR",
+        progressStatusD: null,
+        progressStatusACn: "到达",
+        progressStatusDCn: null,
+        taskACn: "正班",
+        taskDCn: "正班",
+        endFlagA: "N",
+        endFlagD: "N",
+        expressFlagA: "N",
+        expressFlagD: "N",
+        vipAFlag: "N",
+        vipDFlag: "N",
+        timeConflict: null,
+        isBridge: null,
+        attrA: "D",
+        attrD: "D",
+        attrDFlag: null,
+        prevDepTimeA: 1604102100000,
+        sort: 0,
+        sortDate: 1628748328974,
+        abnormalStatusA: null,
+        abnormalStatusD: null,
+        checkPCOccupied: null,
+        flightNum: null,
+        gate: null,
+        gateI: null,
+        stand: null,
+      }
     ],
     isUseable: "Y",
     isBridge: "Y",
@@ -399,6 +456,62 @@ var dataArr = [
         ets: "2021-08-11T00:30",
         ete: "2021-08-11T09:30",
         ats: "2021-08-11T07:30",
+        ate: null,
+        exectDateA: null,
+        exectDateD: null,
+        dynamicResourceNo: "104",
+        dynamicResourceId: 15290796,
+        confirmedFlag: "Y",
+        lockedFlag: "N",
+        splitFlag: "Y",
+        relateT: false,
+        relateF: true,
+        aircraftNo: "5482",
+        aircraftType: "B738",
+        progressStatusA: "ARR",
+        progressStatusD: null,
+        progressStatusACn: "到达",
+        progressStatusDCn: null,
+        taskACn: "正班",
+        taskDCn: "正班",
+        endFlagA: "N",
+        endFlagD: "N",
+        expressFlagA: "N",
+        expressFlagD: "N",
+        vipAFlag: "N",
+        vipDFlag: "N",
+        timeConflict: null,
+        isBridge: null,
+        attrA: "D",
+        attrD: "D",
+        attrDFlag: null,
+        prevDepTimeA: 1604102100000,
+        sort: 0,
+        sortDate: 1628748328974,
+        abnormalStatusA: null,
+        abnormalStatusD: null,
+        checkPCOccupied: null,
+        flightNum: null,
+        gate: null,
+        gateI: null,
+        stand: null,
+      },
+      {
+        dynamicFlightIdA: 45482,
+        dynamicFlightIdD: 45483,
+        flightNumA: "FU6663",
+        flightNumD: "FU6663",
+        inOutFlag: "A|D",
+        afid: "W/Z-CN7669-20201031-A|W/Z-CN7670-20201031-D",
+        sta: "2021-08-11T10:30",
+        eta: "2020-10-31T10:10",
+        ata: "2020-10-31T10:10",
+        std: "2021-08-11T10:30",
+        etd: null,
+        atd: null,
+        ets: "2021-08-11T10:30",
+        ete: "2021-08-11T12:30",
+        ats: "2021-08-11T10:30",
         ate: null,
         exectDateA: null,
         exectDateD: null,
@@ -709,8 +822,64 @@ var dataArr = [
         etd: null,
         atd: null,
         ets: "2021-08-11T10:10",
-        ete: "2021-08-11T14:05",
+        ete: "2021-08-11T16:05",
         ats: "2021-08-11T10:10",
+        ate: null,
+        exectDateA: null,
+        exectDateD: null,
+        dynamicResourceNo: "110",
+        dynamicResourceId: 15290796,
+        confirmedFlag: "Y",
+        lockedFlag: "N",
+        splitFlag: "Y",
+        relateT: false,
+        relateF: true,
+        aircraftNo: "5482",
+        aircraftType: "B738",
+        progressStatusA: "ARR",
+        progressStatusD: null,
+        progressStatusACn: "到达",
+        progressStatusDCn: null,
+        taskACn: "正班",
+        taskDCn: "正班",
+        endFlagA: "N",
+        endFlagD: "N",
+        expressFlagA: "N",
+        expressFlagD: "N",
+        vipAFlag: "N",
+        vipDFlag: "N",
+        timeConflict: null,
+        isBridge: null,
+        attrA: "D",
+        attrD: "D",
+        attrDFlag: null,
+        prevDepTimeA: 1604102100000,
+        sort: 0,
+        sortDate: 1628748328974,
+        abnormalStatusA: null,
+        abnormalStatusD: null,
+        checkPCOccupied: null,
+        flightNum: null,
+        gate: null,
+        gateI: null,
+        stand: null,
+      },
+      {
+        dynamicFlightIdA: 45482,
+        dynamicFlightIdD: 45483,
+        flightNumA: "MU2355",
+        flightNumD: "MU2355",
+        inOutFlag: "A|D",
+        afid: "W/Z-CN7669-20201031-A|W/Z-CN7670-20201031-D",
+        sta: "2021-08-11T15:10",
+        eta: "2020-10-31T10:10",
+        ata: "2020-10-31T10:10",
+        std: "2021-08-11T15:10",
+        etd: null,
+        atd: null,
+        ets: "2021-08-11T15:10",
+        ete: "2021-08-11T17:05",
+        ats: "2021-08-11T15:10",
         ate: null,
         exectDateA: null,
         exectDateD: null,
@@ -946,5 +1115,48 @@ var dataArr = [
 dataArr.sort(function (a, b) {
   return a.standNo - b.standNo;
 });
+
+for(let i = 0; i < dataArr.length; i++ ) {
+  let arrJ = dataArr[i].dataArray
+  if(arrJ.length) {
+    for(let j = 0; j < arrJ.length; j++){
+      let s = ["ats", "ets"];
+      let e = ["ate", "ete"];
+      if (_.isArray(s) && _.isArray(e)) {
+        let tmpS, tmpE;
+        for (let sIndex = 0; sIndex < s.length; sIndex++) {
+          if (_.get(arrJ[j], s[sIndex]) && _.get(arrJ[j], e[sIndex])) {
+            tmpS = s[sIndex];
+            tmpE = e[sIndex];
+            if (sIndex > 0 && _.get(arrJ[j], s[0])) {
+              // 有实际开始没有实际结束
+              tmpS = s[0];
+            }
+            break;
+          }
+        }
+        s = tmpS;
+        e = tmpE;
+      }
+
+    }
+
+    arrJ.sort(function(a,b){
+      return b.ats < a.ats ? 1 : -1
+    });
+  }
+
+  let q = 0
+  for(let k = 0;k< arrJ.length;k++) {
+
+    if(arrJ[k-1] && arrJ[k-1].ete < arrJ[k].ats) {
+
+    } else {
+      q++
+    }
+  }
+
+  dataArr[i].len = q
+}
 
 export { dataArr };

@@ -5,11 +5,25 @@
 <script>
 export default {
   name: "yAxis",
-  props: ["series", "yAxis"],
+  props: ["series"],
   data() {
     return {
       categotyMemberGroup: null,
       html: "<line ref='rowLine' class='rowLine' style='stroke: #e0e0e0; stroke-width: 1'></line><g class='categotyMemberGroup'><rect class='categoryBlock'/><text class='categoryLabel' style=' fill: rgb(51, 51, 51); text-anchor: middle;dominant-baseline: middle; font-weight: bold;'/><line class='rowLine' style='stroke: #e0e0e0; stroke-width: 1'></line> </g>",
+      yAxis: {
+        transStyle: {
+          width: 130,
+          height: 40,
+        },
+        fontStyle: {
+          fontSize: 14,
+        },
+        boundaryGap: [0, 0],
+        top: 50,
+        bottom: 20,
+        margin: [0.5],
+        height: 7280,
+      },
     };
   },
   mounted() {
@@ -97,16 +111,15 @@ export default {
           let obj = data[i];
           let id = obj.standNo;
           let info = obj.standNo + "("+ obj.terminal+")";
-
-          let gadHeight = obj.dataArray && obj.len> 1 ? this.yAxis.transStyle.column * obj.len + this.yAxis.transStyle.interval * (obj.len + 1) : this.yAxis.transStyle.height
-          let oLen = data[i - 1] && data[i - 1].len
+          let gadHeight = obj.dataArray && obj.dataArray.length> 1 ? this.yAxis.transStyle.height * obj.dataArray.length : this.yAxis.transStyle.height
+          let oLen = data[i - 1] && data[i - 1].dataArray.length
           if(i == 0) {
             newHeight = 0
           } else {
-            if(oLen == 0 || oLen == 1) {
-              newHeight = newHeight +  this.yAxis.transStyle.height
+            if(oLen == 0) {
+              newHeight = newHeight +  40
             } else {
-              newHeight = newHeight + oLen * this.yAxis.transStyle.column + (oLen + 1) * this.yAxis.transStyle.interval
+              newHeight = newHeight + oLen * 40
             }
           }
           let topY = this.topY(i, newHeight) + this.yAxis.boundaryGap[0];
